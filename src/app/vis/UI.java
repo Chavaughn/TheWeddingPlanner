@@ -1,4 +1,4 @@
-//package app.interface;
+package app.vis;
 
 public interface UI {
     
