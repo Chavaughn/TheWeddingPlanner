@@ -18,11 +18,15 @@ public class UI {
     private JPasswordField  txtPass;    //entered password
     private String      password;       //correct password
     private JLabel      label;
+    public static int auth; //Replace with user authority once User.java is done
     private JFrame mainDisplay = new JFrame();
     private JFrame loginDisplay = new JFrame();
     private JFrame adminDisplay = new JFrame();
     private JFrame wrongAdminDisplay = new JFrame();
     private JFrame staffDisplay = new JFrame();
+    private JFrame reservationDisplay = new JFrame();
+    private JFrame venueDisplay = new JFrame();
+    private JFrame inventoryDisplay = new JFrame();
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
 
@@ -40,8 +44,6 @@ public class UI {
                 AdminLogin(1);
                 break;
             case 4:
-                //adminDisplay.setVisible(false);
-                //staffDisplay.setVisible(false);
                 TheMainMenu();
                 break;
             case 5:
@@ -49,11 +51,24 @@ public class UI {
                 break;
             case 6:
                 StaffLogin(1);
+                break;
+            case 7:
+                Reservations(auth);
+                break;
+            case 8:
+                Venues(auth);
+                break;
+            case 9:
+                Inventory(auth);
+                break;
             default:
                 break;
         }
     }
-
+    public int setAuth(int i){
+        auth = i;
+        return auth;
+    }
     /* ------------------------------------ ENTRY SCREEN -------------------------------------*/
     private void startLogin(){
         JPanel guiCmds = new JPanel();
@@ -147,6 +162,7 @@ public class UI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+    //Plays sound
     public void playSound(String soundName)
     {
         try 
@@ -167,7 +183,6 @@ public class UI {
         new UI(1);
     }
 
-    //plays audio
     //opens admin login
     private class AdminButtonListener implements ActionListener
     {
@@ -462,6 +477,7 @@ public class UI {
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
               playSound("res/sound/start2.wav");
+              setAuth(1);
               new UI(4);
               adminDisplay.setVisible(false);
           }else{
@@ -480,6 +496,7 @@ public class UI {
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
               playSound("res/sound/start2.wav");
+              setAuth(0);
               new UI(4); //Remember to add restricted authorization
               staffDisplay.setVisible(false);
           }else{
@@ -492,23 +509,20 @@ public class UI {
   /* ------------------------------------ MAIN MENU SCREEN -------------------------------------*/
         /** 
      * Available Actions in TheMainMenu():
-     *   Add a promoter;
-     *      runs PromoterEntry
-     *      [expected addition to the list of promoters]
+     *   Reservations;
+     *      Opens Reservations UI
      * 
-     *   List the saved promoters;
-     *      runs PromoterListing
-     *      [expected pop up window showing all saved promoters]
+     *   Venue;
+     *      Opens venue UI
      * 
-     *   Edit a saved promoter;
-     *      runs 
-     *      [expected update to the list of promoters]
-     *   Delete a saved promoter;
-     *      [expected removal from the list of promoters]
-     *   View recently deleted promoters;
-     *      [expected pop up window showing most recently deleted promoter]
-     *   Exit the program
-     *      [closes the program completely]
+     *   Inventory;
+     *      Opens Inventory UI
+     * 
+     *   History;
+     *       Opens History .xlsx file
+     * 
+     *   Exit;
+     *      Closes the program completely
     */
     public void TheMainMenu(){
       JButton cmdReservation;
@@ -634,7 +648,8 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound("res/sound/button2.wav");
-            new UI(6);   
+            mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
+            new UI(7);   
         }
     }
 
@@ -644,7 +659,8 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound("res/sound/button2.wav");
-            new UI(7);
+            mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
+            new UI(8);
         }
 
     }
@@ -655,7 +671,8 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {   
             playSound("res/sound/button2.wav");
-            new UI(8);
+            mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
+            new UI(9);
         }
     }
 
@@ -674,7 +691,438 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound("res/sound/button2.wav");
-            new UI(9);
+            new UI(10);
+        }
+    }
+    /* ------------------------------------ RESERVATIONS SCREEN -------------------------------------*/
+    private void Reservations(int auth){
+        //System.out.println(this.auth);
+        this.auth = auth;
+        //System.out.println(auth);
+        JPanel guiCmds = new JPanel();
+        JPanel guiDisplay = new JPanel();
+        GridBagConstraints gbc;
+        JButton viewBtn;
+        JButton modifyBtn;
+        JButton deleteBtn;
+        JButton createBtn;
+        JButton backBtn;
+        JLabel Logo = new JLabel("<html><h1>Reservation Management</h1><html>");
+        
+        //Create Icons and Images
+        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
+        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
+        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
+        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
+        Icon backicon = new ImageIcon("res/icons/exiticon.png");
+        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
+        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+
+        //Change image of app
+        reservationDisplay.setIconImage(imgLogo.getImage());
+
+        //Set the layout of the frame
+        reservationDisplay.setLayout(new GridLayout(2, 1));
+
+        //Set the layout of the panels
+        guiCmds.setLayout(new GridBagLayout());
+        guiDisplay.setBounds(10,10,10,10);
+        guiCmds.setBorder(new EmptyBorder(new Insets(10, 50, 50, 40)));
+
+        //Create Buttons
+        if(auth == 1){
+        createBtn = new JButton("  Add Reservation      ", addicon);
+        viewBtn = new JButton(" View Reservations   ", viewicon);
+        modifyBtn = new JButton(" Modify Reservation  ", modifyicon);
+        deleteBtn = new JButton("  Delete Reservation ", deleteicon);
+        backBtn = new JButton("Main Menu", backicon);
+        }
+        else{
+            createBtn = new JButton("  Add Reservation      ", erroricon);
+            viewBtn = new JButton(" View Reservations   ", viewicon);
+            modifyBtn = new JButton(" Modify Reservation  ", erroricon);
+            deleteBtn = new JButton("  Delete Reservation ", erroricon);
+            backBtn = new JButton("Main Menu", backicon);
+        }
+        
+        //Create Logo and Grab Bag Constraints variable
+        Logo.setIcon(imgLogo);
+        Logo.setForeground(Color.WHITE);
+        Logo.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Logo.setHorizontalTextPosition(SwingConstants.CENTER);
+        gbc = new GridBagConstraints();
+
+        //Set the size of the buttons
+        createBtn.setSize(new Dimension(340, 100));
+        modifyBtn.setSize(new Dimension(340, 100));
+        viewBtn.setSize(new Dimension(340, 100));
+        deleteBtn.setSize(new Dimension(340, 100));
+        //backBtn.setSize(new Dimension(340, 100)); //Remove if not using Design 4
+
+        //Change background of buttons and panels
+        guiDisplay.setBackground(new Color(15, 17, 22));
+        guiCmds.setBackground(new Color(15, 17, 22));
+        createBtn.setBackground(new  Color(226,228,233));
+        viewBtn.setBackground(new  Color(226,228,233));
+        modifyBtn.setBackground(new  Color(226,228,233));
+        deleteBtn.setBackground(new Color(226,228,233));
+        deleteBtn.setForeground(new Color(221,55,78));
+        backBtn.setBackground(new Color(221,55,78));
+        backBtn.setForeground(Color.white);
+        
+       //Apply grid bag constraints to buttons
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 0;
+       guiCmds.add(createBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 0;
+
+       guiCmds.add(modifyBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 1;
+
+       guiCmds.add(deleteBtn, gbc); 
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 1;
+       guiCmds.add(viewBtn, gbc);
+       gbc.ipady = 5;  
+       gbc.gridx = 0;  
+       gbc.gridy = 2;  
+       gbc.fill = GridBagConstraints.HORIZONTAL;  //Change back to HORIZONTAL if using DESIGN 1 or 2, CENTER otherwise
+       gbc.gridwidth = 2;
+       guiCmds.add(backBtn, gbc);
+       
+       //Add logo to display
+       guiDisplay.add(Logo, BorderLayout.NORTH);
+
+       //Add panels to frame
+       reservationDisplay.add(guiDisplay, BorderLayout.NORTH);
+       reservationDisplay.add(guiCmds);
+       
+       //Add Button Listeners
+       if(auth == 1){
+        createBtn.addActionListener(new AddButtonListener());
+        modifyBtn.addActionListener(new ModifyButtonListener());
+        deleteBtn.addActionListener(new DeleteButtonListener());
+        }
+        else{
+            createBtn.addActionListener(new UnauthorizedButtonListener());
+            modifyBtn.addActionListener(new UnauthorizedButtonListener());
+            deleteBtn.addActionListener(new UnauthorizedButtonListener());
+        }
+        viewBtn.addActionListener(new ViewButtonListener());
+        backBtn.addActionListener(new BackToMainButtonListener());
+
+       //Apply formatting to frame 
+       packFrameLogin(reservationDisplay);
+
+    }
+    private class BackToMainButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+          playSound("res/sound/button2.wav");
+            reservationDisplay.setVisible(false);
+            venueDisplay.setVisible(false);
+            inventoryDisplay.setVisible(false);
+            new UI(4);
+        }
+    }
+    /* ------------------------------------ VENUES SCREEN -------------------------------------*/
+    private void Venues(int auth){
+        this.auth = auth;
+        JPanel guiCmds = new JPanel();
+        JPanel guiDisplay = new JPanel();
+        GridBagConstraints gbc;
+        JButton viewBtn;
+        JButton modifyBtn;
+        JButton deleteBtn;
+        JButton createBtn;
+        JButton backBtn;
+        JLabel Logo = new JLabel("<html><h1>Venue Management</h1><html>");
+        
+        //Create Icons and Images
+        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
+        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
+        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
+        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
+        Icon backicon = new ImageIcon("res/icons/exiticon.png");
+        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
+        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+
+        //Change image of app
+        venueDisplay.setIconImage(imgLogo.getImage());
+        
+        //Set the layout of the frame
+        venueDisplay.setLayout(new GridLayout(2, 1));
+
+        //Set the layout of the panels
+        guiCmds.setLayout(new GridBagLayout());
+        guiDisplay.setBounds(10,10,10,10);
+        guiCmds.setBorder(new EmptyBorder(new Insets(10, 50, 50, 40)));
+
+        //Create Buttons
+        if(auth == 1){
+        createBtn = new JButton("   Add Venue   ", addicon);
+        viewBtn = new JButton(" View Venues ", viewicon);
+        modifyBtn = new JButton("Modify Venue", modifyicon);
+        deleteBtn = new JButton(" Delete Venue", deleteicon);
+        backBtn = new JButton("Main Menu", backicon);
+        }
+        else{
+            createBtn = new JButton("   Add Venue   ", erroricon);
+            viewBtn = new JButton(" View Venues ", viewicon);
+            modifyBtn = new JButton("Modify Venue", erroricon);
+            deleteBtn = new JButton(" Delete Venue", erroricon);
+            backBtn = new JButton("Main Menu", backicon);
+        }
+        
+        //Create Logo and Grab Bag Constraints variable
+        Logo.setIcon(imgLogo);
+        Logo.setForeground(Color.WHITE);
+        Logo.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Logo.setHorizontalTextPosition(SwingConstants.CENTER);
+        gbc = new GridBagConstraints();
+
+        //Set the size of the buttons
+        createBtn.setSize(new Dimension(340, 100));
+        modifyBtn.setSize(new Dimension(340, 100));
+        viewBtn.setSize(new Dimension(340, 100));
+        deleteBtn.setSize(new Dimension(340, 100));
+        //backBtn.setSize(new Dimension(340, 100)); //Remove if not using Design 4
+
+        //Change background of buttons and panels
+        guiDisplay.setBackground(new Color(15, 17, 22));
+        guiCmds.setBackground(new Color(15, 17, 22));
+        createBtn.setBackground(new  Color(226,228,233));
+        viewBtn.setBackground(new  Color(226,228,233));
+        modifyBtn.setBackground(new  Color(226,228,233));
+        deleteBtn.setBackground(new Color(226,228,233));
+        deleteBtn.setForeground(new Color(221,55,78));
+        backBtn.setBackground(new Color(221,55,78));
+        backBtn.setForeground(Color.white);
+        
+       //Apply grid bag constraints to buttons
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 0;
+       guiCmds.add(createBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 0;
+
+       guiCmds.add(modifyBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 1;
+
+       guiCmds.add(deleteBtn, gbc); 
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 1;
+       guiCmds.add(viewBtn, gbc);
+       gbc.ipady = 5;  
+       gbc.gridx = 0;  
+       gbc.gridy = 2;  
+       gbc.fill = GridBagConstraints.HORIZONTAL;  //Change back to HORIZONTAL if using DESIGN 1 or 2, CENTER otherwise
+       gbc.gridwidth = 2;
+       guiCmds.add(backBtn, gbc);
+       
+       //Add logo to display
+       guiDisplay.add(Logo, BorderLayout.NORTH);
+
+       //Add panels to frame
+       venueDisplay.add(guiDisplay, BorderLayout.NORTH);
+       venueDisplay.add(guiCmds);
+       
+       //Add Button Listeners
+       if(auth == 1){
+        createBtn.addActionListener(new AddButtonListener());
+        modifyBtn.addActionListener(new ModifyButtonListener());
+        deleteBtn.addActionListener(new DeleteButtonListener());
+        }
+        else{
+            createBtn.addActionListener(new UnauthorizedButtonListener());
+            modifyBtn.addActionListener(new UnauthorizedButtonListener());
+            deleteBtn.addActionListener(new UnauthorizedButtonListener());
+        }
+        viewBtn.addActionListener(new ViewButtonListener());
+        backBtn.addActionListener(new BackToMainButtonListener());
+
+       //Apply formatting to frame 
+       packFrameLogin(venueDisplay);
+    }
+    /* ------------------------------------ INVENTORY SCREEN -------------------------------------*/
+    private void Inventory(int auth){
+        this.auth = auth;
+        JPanel guiCmds = new JPanel();
+        JPanel guiDisplay = new JPanel();
+        GridBagConstraints gbc;
+        JButton viewBtn;
+        JButton modifyBtn;
+        JButton deleteBtn;
+        JButton createBtn;
+        JButton backBtn;
+        JLabel Logo = new JLabel("<html><h1>Inventory Management</h1><html>");
+        
+        //Create Icons and Images
+        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
+        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
+        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
+        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
+        Icon backicon = new ImageIcon("res/icons/exiticon.png");
+        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
+        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+
+        //Change image of app
+        inventoryDisplay.setIconImage(imgLogo.getImage());
+        
+        //Set the layout of the frame
+        inventoryDisplay.setLayout(new GridLayout(2, 1));
+
+        //Set the layout of the panels
+        guiCmds.setLayout(new GridBagLayout());
+        guiDisplay.setBounds(10,10,10,10);
+        guiCmds.setBorder(new EmptyBorder(new Insets(10, 50, 50, 40)));
+
+        //Create Buttons
+        if(auth == 1){
+        createBtn = new JButton("   Add Item      ", addicon);
+        viewBtn = new JButton("View Inventory", viewicon);
+        modifyBtn = new JButton("   Modify Item   ", modifyicon);
+        deleteBtn = new JButton("  Delete Item  ", deleteicon);
+        backBtn = new JButton("Main Menu", backicon);
+        }
+        else{
+            createBtn = new JButton("   Add Item      ", erroricon);
+            viewBtn = new JButton("View Inventory", viewicon);
+            modifyBtn = new JButton("   Modify Item   ", erroricon);
+            deleteBtn = new JButton("  Delete Item  ", erroricon);
+            backBtn = new JButton("Main Menu", backicon);
+        }
+        
+        //Create Logo and Grab Bag Constraints variable
+        Logo.setIcon(imgLogo);
+        Logo.setForeground(Color.WHITE);
+        Logo.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Logo.setHorizontalTextPosition(SwingConstants.CENTER);
+        gbc = new GridBagConstraints();
+
+        //Set the size of the buttons
+        createBtn.setSize(new Dimension(340, 100));
+        modifyBtn.setSize(new Dimension(340, 100));
+        viewBtn.setSize(new Dimension(340, 100));
+        deleteBtn.setSize(new Dimension(340, 100));
+        //backBtn.setSize(new Dimension(340, 100)); //Remove if not using Design 4
+
+        //Change background of buttons and panels
+        guiDisplay.setBackground(new Color(15, 17, 22));
+        guiCmds.setBackground(new Color(15, 17, 22));
+        createBtn.setBackground(new  Color(226,228,233));
+        viewBtn.setBackground(new  Color(226,228,233));
+        modifyBtn.setBackground(new  Color(226,228,233));
+        deleteBtn.setBackground(new Color(226,228,233));
+        deleteBtn.setForeground(new Color(221,55,78));
+        backBtn.setBackground(new Color(221,55,78));
+        backBtn.setForeground(Color.white);
+        
+       //Apply grid bag constraints to buttons
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 0;
+       guiCmds.add(createBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 0;
+
+       guiCmds.add(modifyBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 1;
+
+       guiCmds.add(deleteBtn, gbc); 
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 1;
+       guiCmds.add(viewBtn, gbc);
+       gbc.ipady = 5;  
+       gbc.gridx = 0;  
+       gbc.gridy = 2;  
+       gbc.fill = GridBagConstraints.HORIZONTAL;  //Change back to HORIZONTAL if using DESIGN 1 or 2, CENTER otherwise
+       gbc.gridwidth = 2;
+       guiCmds.add(backBtn, gbc);
+       
+       //Add logo to display
+       guiDisplay.add(Logo, BorderLayout.NORTH);
+
+       //Add panels to frame
+       inventoryDisplay.add(guiDisplay, BorderLayout.NORTH);
+       inventoryDisplay.add(guiCmds);
+       
+        //Add button listeners
+        if(auth == 1){
+            createBtn.addActionListener(new AddButtonListener());
+            modifyBtn.addActionListener(new ModifyButtonListener());
+            deleteBtn.addActionListener(new DeleteButtonListener());
+            }
+            else{
+                createBtn.addActionListener(new UnauthorizedButtonListener());
+                modifyBtn.addActionListener(new UnauthorizedButtonListener());
+                deleteBtn.addActionListener(new UnauthorizedButtonListener());
+            }
+            viewBtn.addActionListener(new ViewButtonListener());
+            backBtn.addActionListener(new BackToMainButtonListener());
+
+       //Apply formatting to frame 
+       packFrameLogin(inventoryDisplay);
+    }
+
+    private class UnauthorizedButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound("res/sound/error.wav");
+        }
+    }
+
+    // These need to be finished
+    private class AddButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound("res/sound/button2.wav");
+        }
+    }
+
+
+    private class ViewButtonListener implements ActionListener
+    { 
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound("res/sound/button2.wav");
+        }
+
+    }
+
+
+    private class ModifyButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {   
+            playSound("res/sound/button2.wav");
+        }
+    }
+
+
+    private class DeleteButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound("res/sound/button2.wav");
         }
     }
 }
