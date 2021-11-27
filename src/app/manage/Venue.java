@@ -26,12 +26,14 @@ public class Venue {
         this.venueName = venueName;
         this.venueID = venueID;
         this.date = LocalDate.of(date[0], date[1], date[2]);
+        setLocation(location);
     }
     /**Alt constructor */
     public Venue(String venueName, String venueID, int[] date, String location, List<String> itemsNeeded){
         this.venueName = venueName;
         this.venueID = venueID;
         this.date = LocalDate.of(date[0], date[1], date[2]);
+        setLocation(location);
         this.itemsNeeded = itemsNeeded;
     }
 
