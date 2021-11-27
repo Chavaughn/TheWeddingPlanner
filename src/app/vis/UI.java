@@ -300,6 +300,7 @@ public class UI {
       adminDisplay.pack();
       adminDisplay.setResizable(false);
       adminDisplay.setLocationRelativeTo(null);
+      adminDisplay.getRootPane().setDefaultButton(cmdPass);
       adminDisplay.setVisible(true);
       }
       /* IF PASSWORD WAS INCORRECT, CHANGE UI */
@@ -354,6 +355,7 @@ public class UI {
       wrongAdminDisplay.pack();
       wrongAdminDisplay.setResizable(false);
       wrongAdminDisplay.setLocationRelativeTo(null);
+      wrongAdminDisplay.getRootPane().setDefaultButton(cmdPass);
       wrongAdminDisplay.setVisible(true);
       }
   }

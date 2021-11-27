@@ -1,9 +1,11 @@
 package app.auth;
 
+import java.io.UnsupportedEncodingException;
+
 public class User {
     private String name;
     private String iD;
-    protected String[] password;
+    protected String password;
     private String authlevel;
 
     //TODO consider the validity of making this an enum of 3 levels
@@ -25,7 +27,7 @@ public class User {
     }
 
     /**Constructor Create a user object */
-    public User(String name, String iD, String[] password, int level){
+    public User(String name, String iD, String password, int level){
         this.name = name;
         this.iD = iD;
         this.password = password;
