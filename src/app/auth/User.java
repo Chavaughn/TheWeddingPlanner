@@ -29,6 +29,7 @@ public class User {
         this.name = name;
         this.iD = iD;
         this.password = password;
+        this.authlevel = hierarchy.unset.level;
         setHierarchy(level);
     }
 
@@ -63,5 +64,10 @@ public class User {
     /**RETURNS the iD of the user Object */
     public String getUseriD(){
         return this.iD;
+    }
+
+    /**RETURNS the Authority Level of the user Object*/
+    public String getAuthLevel(){
+        return this.authlevel;
     }
 }
