@@ -27,16 +27,44 @@ public class Venue {
         this.venueID = venueID;
         this.date = LocalDate.of(date[0], date[1], date[2]);
     }
+    /**Alt constructor */
+    public Venue(String venueName, String venueID, int[] date, String location, List<String> itemsNeeded){
+        this.venueName = venueName;
+        this.venueID = venueID;
+        this.date = LocalDate.of(date[0], date[1], date[2]);
+        this.itemsNeeded = itemsNeeded;
+    }
 
     /**RETURNS the date of the venue object */
     public LocalDate getDate(){
         return this.date;
     }
 
+    /**RETURNS the name of the venue object */
+    public String getVenueName(){
+        return this.venueName;
+    }
+    
+    /**RETURNS the location of the venue object */
+    public String getLocation(){
+        return this.location;
+    }
+    
+    /**RETURNS the ID of the venue object */
+    public String getVenueId(){
+        return this.venueID;
+    }
+    
+    /**RETURNS the items needed of the venue object */
+    public List<String> getItemsNeeded(){
+        return this.itemsNeeded;
+    }
+
     /**Sets the date of the venue object */
     public void setDate(int[] date){
         this.date = LocalDate.of(date[0],date[1],date[2]);
     }
+    
 
     /**sets location of the venue object */
     public void setLocation(String location){
