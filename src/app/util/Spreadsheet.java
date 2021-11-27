@@ -2,6 +2,7 @@ package app.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -21,17 +22,22 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import app.auth.User;
+import app.manage.Client;
+import app.manage.Venue;
+
 
 public class Spreadsheet {
 
     File file = new File("The_Wedding_Planner.xlsx");
     FileInputStream fis = new FileInputStream(file);
-    XSSFWorkbook workbook = new XSSFWorkbook();
+    static XSSFWorkbook workbook = new XSSFWorkbook();
     XSSFSheet userSheet = workbook.createSheet("User");
     XSSFSheet venueSheet = workbook.createSheet("Venue");
     XSSFSheet inventorySheet = workbook.createSheet("Inventory");
     XSSFSheet clientSheet = workbook.createSheet("Client");
     XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
+    XSSFSheet itemSheet = workbook.createSheet("Items");
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
@@ -40,10 +46,10 @@ public class Spreadsheet {
         }
         
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
-        data.put("1", new Object[] {"ID", "AccessLevel", "Password"});
-        data.put("2", new Object[] {"Date", "Venue Type", "Parish", "Estimated Items Needed"});
+        data.put("1", new Object[] {"ID", "NAME", "AccessLevel"});
+        data.put("2", new Object[] {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"});
         data.put("3", new Object[] {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"});
-        data.put("4", new Object[] {"ReservationID", "Name", "Date of Birth", "Age", "Email", "Phone Numbers"});
+        data.put("4", new Object[] {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"});
         data.put("5", new Object[] {"Chairs"});
         data.put("6", new Object[] {"Name", "Quantity"});
         Set<String> keyset = data.keySet();
@@ -57,33 +63,28 @@ public class Spreadsheet {
             for(int i=0; i<workbook.getNumberOfSheets(); i++){
                 currsheet = workbook.getSheetAt(i);  
                 
-                    if (Integer.parseInt(key) == (i+1)){
-                        row = currsheet.createRow(rownum);
-                        System.out.println(Integer.parseInt(key)+"  "+(i+1));
+                if (Integer.parseInt(key) == (i+1)){
+                    row = currsheet.createRow(rownum);
+                    System.out.println(Integer.parseInt(key)+"  "+(i+1));
                     Object [] objArr = data.get(key);
                     int cellnum = 0;
                     for (Object obj : objArr)
                     {
                         
                         System.out.println((String)obj);
-                       
-                            Cell cell = row.createCell(cellnum++);
-                            if(obj instanceof String)
-                                cell.setCellValue((String)obj);
-                            else if(obj instanceof Integer)
-                                cell.setCellValue((Integer)obj);
+                        
+                        Cell cell = row.createCell(cellnum++);
+                        if(obj instanceof String)
+                            cell.setCellValue((String)obj);
+                        else if(obj instanceof Integer)
+                            cell.setCellValue((Integer)obj);
                         
                     }
-                    for(int x=0; x<7 ; x++){
-                        currsheet.autoSizeColumn(x);
-                    } 
-                    }
-            
-               
-            }
-            
-           
-            
+                }
+                for(int x=0; x<7 ; x++){
+                    currsheet.autoSizeColumn(x);
+                }    
+            }  
         }
         try
         {
@@ -97,7 +98,7 @@ public class Spreadsheet {
             fis.close();
            
 
-            System.out.println("Tropichem Labs.xlsx written successfully on disk.");
+            System.out.println("The_Wedding_Planner.xlsx written successfully on disk.");
             
         } 
         catch (Exception e) 
@@ -107,6 +108,83 @@ public class Spreadsheet {
        
     }
 
+    public static void writeUserSheet(User user) throws FileNotFoundException, IOException{
+
+        int rowCount = workbook.getSheet("User").getLastRowNum();
+        Row row =  workbook.getSheet("User").createRow(++rowCount);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(user.getUseriD());
+
+        cell = row.createCell(1);
+        cell.setCellValue(user.getUserName());
+
+        cell = row.createCell(2);
+        cell.setCellValue(user.getAuthLevel());
+
+        for(int x=0; x<7 ; x++){
+            workbook.getSheet("User").autoSizeColumn(x);
+        } 
+
+        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+            workbook.write(outputStream);
+        }
+
+    }
+
+    static void writeVenueSheet(Venue venue) throws FileNotFoundException, IOException{
+
+        int rowCount = workbook.getSheet("Venue").getLastRowNum();
+        Row row =  workbook.getSheet("Venue").createRow(++rowCount);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(venue.getVenueName());
+
+        cell = row.createCell(1);
+        cell.setCellValue(venue.getVenueId());
+
+        cell = row.createCell(2);
+        cell.setCellValue(venue.getDate());
+
+        cell = row.createCell(4);
+        cell.setCellValue(venue.getLocation());
+
+        for(int x=0; x<7 ; x++){
+            workbook.getSheet("Venue").autoSizeColumn(x);
+        } 
+
+        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+            workbook.write(outputStream);
+        }
+
+    }
+
+    public static void writeClientSheet(Client client) throws FileNotFoundException, IOException{
+
+        int rowCount = workbook.getSheet("Client").getLastRowNum();
+        Row row =  workbook.getSheet("Client").createRow(++rowCount);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(client.getClientName());
+
+        cell = row.createCell(1);
+        cell.setCellValue(client.getDateOfBirth());
+
+        cell = row.createCell(2);
+        cell.setCellValue(client.getAge());
+
+        cell = row.createCell(3);
+        cell.setCellValue(client.getEmail());
+
+        cell = row.createCell(4);
+        cell.setCellValue(client.getPhoneNumber());
+
+        for(int x=0; x<7 ; x++){
+            workbook.getSheet("Client").autoSizeColumn(x);
+        } 
+
+        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+            workbook.write(outputStream);
+        }
+
+    }
 
 
 
@@ -131,6 +209,21 @@ public class Spreadsheet {
             e.printStackTrace();}
 
         Spreadsheet spreadsheet = new Spreadsheet();
+
+        // User user = new User("Richard", "12","pass",2);
+        // writeUserSheet(user);
+        // user = new User("Simon", "13","pass",1);
+        // writeUserSheet(user);
+
+        // int[] intArray = new int[]{2021,2,27}; 
+        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        // writeVenueSheet(venue);
+
+        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        // writeClientSheet(client);
+        
+
+       
     }
 }
 
