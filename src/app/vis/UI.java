@@ -30,12 +30,31 @@ public class UI {
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
 
+    /**Images constants */
+    private final String adminIcon = "src/res/icons/adminicon.png";
+    private final String staffIcon = "src/res/icons/stafficon.png";
+    private final String exitIcon = "src/res/icons/exiticon.png";
+    private final String LogoImg = "src/res/start/Logov5.png";
+    private final String passIcon = "src/res/icons/unlockpasswordicon.png";
+    private final String errorIcon = "src/res/icons/erroricon.png";
+    private final String addIcon = "src/res/icons/addicon.png";
+    private final String editIcon = "src/res/icons/editicon.png";
+    private final String listIcon = "src/res/icons/listicon.png";
+    private final String deleteIcon = "src/res/icons/deleteIcon.png";
+    private final String viewPastIcon = "src/res/icons/viewpasticon.png";
+
+
+    /**Souynd Constants */
+    private final String startSound = "src/res/sound/start2.wav";
+    private final String buttonPressSound = "src/res/sound/button2.wav";
+    private final String errorSound = "src/res/sound/error.wav";
+
     public UI(int state){
         this.state = state;
         switch (state) {
             case 1:    
-                playSound("res/sound/start2.wav");
-                startLogin();
+                playSound(startSound);
+                StartLogin();
                 break;
             case 2:
                 AdminLogin(0);
@@ -70,7 +89,7 @@ public class UI {
         return auth;
     }
     /* ------------------------------------ ENTRY SCREEN -------------------------------------*/
-    private void startLogin(){
+    private void StartLogin(){
         JPanel guiCmds = new JPanel();
         JPanel guiDisplay = new JPanel();
         GridBagConstraints gbc;
@@ -79,10 +98,10 @@ public class UI {
         JButton exitBtn;
         JLabel Logo;
         
-        Icon adminicon = new ImageIcon("res/icons/adminicon.png");
-        Icon stafficon = new ImageIcon("res/icons/stafficon.png");
-        Icon exiticon = new ImageIcon("res/icons/exiticon.png");
-        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+        Icon adminicon = new ImageIcon(adminIcon);
+        Icon stafficon = new ImageIcon(staffIcon);
+        Icon exiticon = new ImageIcon(exitIcon);
+        ImageIcon imgLogo = new ImageIcon(LogoImg);
 
         loginDisplay.setTitle("Login");
         loginDisplay.setIconImage(imgLogo.getImage());
@@ -188,7 +207,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         { 
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             loginDisplay.setVisible(false);
             new UI(2);
         }
@@ -198,7 +217,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             loginDisplay.setVisible(false);
             new UI(5);
             //setVisible(false);
@@ -210,7 +229,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             System.exit(0);
         }
     }
@@ -251,8 +270,8 @@ public class UI {
   
   
       //Create Icons For Buttons
-      Icon passicon = new ImageIcon("res/icons/unlockpasswordicon.png");
-      Icon closeicon = new ImageIcon("res/icons/exiticon.png");
+      Icon passicon = new ImageIcon(passIcon);
+      Icon closeicon = new ImageIcon(exitIcon);
   
   
       //Create Buttons
@@ -287,7 +306,7 @@ public class UI {
       else{
       label = new JLabel("<html><i><b></b></i>Password: <html>");
       label.setForeground(Color.WHITE);
-      ImageIcon image = new ImageIcon("res/icons/erroricon.png");
+      ImageIcon image = new ImageIcon(errorIcon);
       JLabel label2 = new JLabel("<html><i><b>INCORRECT PASSWORD</b></i><html>", image, JLabel.NORTH_EAST);
       label2.setForeground(Color.WHITE);
       pnlDisplay.add( label2, BorderLayout.WEST);
@@ -305,8 +324,8 @@ public class UI {
   
   
       //Create Icons For Buttons
-      Icon passicon = new ImageIcon("res/icons/unlockpasswordicon.png");
-      Icon closeicon = new ImageIcon("res/icons/exiticon.png");
+      Icon passicon = new ImageIcon(passIcon);
+      Icon closeicon = new ImageIcon(exitIcon);
   
   
       //Create Buttons
@@ -370,8 +389,8 @@ public class UI {
     
     
         //Create Icons For Buttons
-        Icon passicon = new ImageIcon("res/icons/unlockpasswordicon.png");
-        Icon closeicon = new ImageIcon("res/icons/exiticon.png");
+        Icon passicon = new ImageIcon(passIcon);
+        Icon closeicon = new ImageIcon(exitIcon);
     
     
         //Create Buttons
@@ -406,7 +425,7 @@ public class UI {
         else{
         label = new JLabel("<html><i><b></b></i>Password: <html>");
         label.setForeground(Color.WHITE);
-        ImageIcon image = new ImageIcon("res/icons/erroricon.png");
+        ImageIcon image = new ImageIcon(errorIcon);
         JLabel label2 = new JLabel("<html><i><b>INCORRECT PASSWORD</b></i><html>", image, JLabel.NORTH_EAST);
         label2.setForeground(Color.WHITE);
         pnlDisplay.add( label2, BorderLayout.WEST);
@@ -424,8 +443,8 @@ public class UI {
     
     
         //Create Icons For Buttons
-        Icon passicon = new ImageIcon("res/icons/unlockpasswordicon.png");
-        Icon closeicon = new ImageIcon("res/icons/exiticon.png");
+        Icon passicon = new ImageIcon(passIcon);
+        Icon closeicon = new ImageIcon(exitIcon);
     
     
         //Create Buttons
@@ -463,7 +482,7 @@ public class UI {
   {
       public void actionPerformed(ActionEvent e)
       {
-        playSound("res/sound/button2.wav");
+        playSound(buttonPressSound);
           adminDisplay.setVisible(false);
           new UI(1);
       }
@@ -472,7 +491,7 @@ public class UI {
   {
       public void actionPerformed(ActionEvent e)
       {
-        playSound("res/sound/button2.wav");
+        playSound(buttonPressSound);
 
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
@@ -481,7 +500,7 @@ public class UI {
               new UI(4);
               adminDisplay.setVisible(false);
           }else{
-              playSound("res/sound/error.wav");
+              playSound(errorSound);
               adminDisplay.setVisible(false);
               new UI(3);
           }
@@ -491,7 +510,7 @@ public class UI {
   {
       public void actionPerformed(ActionEvent e)
       {
-        playSound("res/sound/button2.wav");
+        playSound(buttonPressSound);
 
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
@@ -500,7 +519,7 @@ public class UI {
               new UI(4); //Remember to add restricted authorization
               staffDisplay.setVisible(false);
           }else{
-              playSound("res/sound/error.wav");
+              playSound(errorSound);
               staffDisplay.setVisible(false);
               new UI(6);
           }
@@ -548,29 +567,29 @@ public class UI {
 
      
       //Create icons for buttons
-      Icon addpromicon =      new ImageIcon("res/icons/addpromotericon.png");
-      Icon lstpromicon =      new ImageIcon("res/icons/listpromotericon.png");
-      Icon editpromicon =     new ImageIcon("res/icons/editpromotericon.png");
-      Icon delpromicon =      new ImageIcon("res/icons/deletepromotericon.png");
-      Icon viewpastpromicon = new ImageIcon("res/icons/viewpastpromotersicon.png");
-      Icon exiticon =         new ImageIcon("res/icons/exiticon.png");
+      Icon addicon =      new ImageIcon(addIcon);
+      Icon lsticon =      new ImageIcon(listIcon);
+      Icon editicon =     new ImageIcon(editIcon);
+      Icon delicon =      new ImageIcon(deleteIcon);
+      Icon viewpasticon = new ImageIcon(viewPastIcon);
+      Icon exiticon =         new ImageIcon(exitIcon);
 
       
       //Create Buttons
-      cmdReservation = new JButton   ("   Reservations    ", editpromicon);
+      cmdReservation = new JButton   ("   Reservations    ", editicon);
       cmdReservation.setPreferredSize(new Dimension(150, 100));
 
-      cmdVenue = new JButton  ("      Venues           ", editpromicon);
+      cmdVenue = new JButton  ("      Venues           ", editicon);
       cmdVenue.setPreferredSize(new Dimension(150, 100));
 
-      cmdInventory = new JButton  ("      Inventory        ", editpromicon);
+      cmdInventory = new JButton  ("      Inventory        ", editicon);
       cmdInventory.setPreferredSize(new Dimension(150, 100));
 
-      cmdDunno = new JButton("  Dont Know Yet  ", editpromicon);
+      cmdDunno = new JButton("  Dont Know Yet  ", editicon);
       cmdDunno.setPreferredSize(new Dimension(150, 100));
 
       //Change this icon later
-      cmdHistory = new JButton("     History             ", viewpastpromicon);
+      cmdHistory = new JButton("     History             ", viewpasticon);
       cmdHistory.setPreferredSize(new Dimension(150, 100));
       
       cmdExit = new JButton          ("        Exit                ", exiticon);
@@ -634,7 +653,7 @@ public class UI {
       
       //adds image to panel
       pnlDisplay.add(Box.createRigidArea(new Dimension(-60,600)));  
-      ImageIcon image = new ImageIcon("res/start/Logov5.png");
+      ImageIcon image = new ImageIcon(LogoImg);
       JLabel label = new JLabel("", image, JLabel.CENTER);
       pnlDisplay.add(label);
       
@@ -647,7 +666,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
             new UI(7);   
         }
@@ -658,7 +677,7 @@ public class UI {
     { 
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
             new UI(8);
         }
@@ -670,7 +689,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {   
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             mainDisplay.setVisible(false); //Debatable whether this should be hidden or not
             new UI(9);
         }
@@ -681,7 +700,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
         }
     }
 
@@ -690,7 +709,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
             new UI(10);
         }
     }
@@ -710,13 +729,13 @@ public class UI {
         JLabel Logo = new JLabel("<html><h1>Reservation Management</h1><html>");
         
         //Create Icons and Images
-        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
-        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
-        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
-        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
-        Icon backicon = new ImageIcon("res/icons/exiticon.png");
-        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
-        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+        Icon addicon = new ImageIcon(addIcon);
+        Icon viewicon = new ImageIcon(listIcon);
+        Icon modifyicon = new ImageIcon(editIcon);
+        Icon deleteicon = new ImageIcon(deleteIcon);
+        Icon backicon = new ImageIcon(exitIcon);
+        Icon erroricon = new ImageIcon(errorIcon);
+        ImageIcon imgLogo = new ImageIcon(LogoImg);
 
         //Change image of app
         reservationDisplay.setIconImage(imgLogo.getImage());
@@ -825,7 +844,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-          playSound("res/sound/button2.wav");
+          playSound(buttonPressSound);
             reservationDisplay.setVisible(false);
             venueDisplay.setVisible(false);
             inventoryDisplay.setVisible(false);
@@ -846,13 +865,13 @@ public class UI {
         JLabel Logo = new JLabel("<html><h1>Venue Management</h1><html>");
         
         //Create Icons and Images
-        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
-        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
-        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
-        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
-        Icon backicon = new ImageIcon("res/icons/exiticon.png");
-        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
-        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+        Icon addicon = new ImageIcon(addIcon);
+        Icon viewicon = new ImageIcon(listIcon);
+        Icon modifyicon = new ImageIcon(editIcon);
+        Icon deleteicon = new ImageIcon(deleteIcon);
+        Icon backicon = new ImageIcon(exitIcon);
+        Icon erroricon = new ImageIcon(errorIcon);
+        ImageIcon imgLogo = new ImageIcon(LogoImg);
 
         //Change image of app
         venueDisplay.setIconImage(imgLogo.getImage());
@@ -970,13 +989,13 @@ public class UI {
         JLabel Logo = new JLabel("<html><h1>Inventory Management</h1><html>");
         
         //Create Icons and Images
-        Icon addicon = new ImageIcon("res/icons/addpromotericon.png");
-        Icon viewicon = new ImageIcon("res/icons/listpromotericon.png");
-        Icon modifyicon = new ImageIcon("res/icons/editpromotericon.png");
-        Icon deleteicon = new ImageIcon("res/icons/deletepromotericon.png");
-        Icon backicon = new ImageIcon("res/icons/exiticon.png");
-        Icon erroricon = new ImageIcon("res/icons/erroricon.png");
-        ImageIcon imgLogo = new ImageIcon("res/start/Logov5.png");
+        Icon addicon = new ImageIcon(addIcon);
+        Icon viewicon = new ImageIcon(listIcon);
+        Icon modifyicon = new ImageIcon(editIcon);
+        Icon deleteicon = new ImageIcon(deleteIcon);
+        Icon backicon = new ImageIcon(exitIcon);
+        Icon erroricon = new ImageIcon(errorIcon);
+        ImageIcon imgLogo = new ImageIcon(LogoImg);
 
         //Change image of app
         inventoryDisplay.setIconImage(imgLogo.getImage());
@@ -1085,7 +1104,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/error.wav");
+            playSound(errorSound);
         }
     }
 
@@ -1094,7 +1113,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
         }
     }
 
@@ -1103,7 +1122,7 @@ public class UI {
     { 
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
         }
 
     }
@@ -1113,7 +1132,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {   
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
         }
     }
 
@@ -1122,7 +1141,7 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
-            playSound("res/sound/button2.wav");
+            playSound(buttonPressSound);
         }
     }
 }
