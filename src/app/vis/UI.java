@@ -8,10 +8,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+
+import app.manage.Venue;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
+import java.util.Arrays;
 
 public class UI {
     private int state;
@@ -27,6 +31,8 @@ public class UI {
     private JFrame reservationDisplay = new JFrame();
     private JFrame venueDisplay = new JFrame();
     private JFrame inventoryDisplay = new JFrame();
+    private JFrame selectParishDisplay = new JFrame();
+    private JComboBox   dropDownBoxMenu;
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
 
@@ -79,6 +85,9 @@ public class UI {
                 break;
             case 9:
                 Inventory(auth);
+                break;
+            case 10:
+                SelectParish();
                 break;
             default:
                 break;
@@ -497,13 +506,15 @@ public class UI {
 
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
-              playSound("res/sound/start2.wav");
+              playSound(startSound);
               setAuth(1);
               new UI(4);
               adminDisplay.setVisible(false);
+              wrongAdminDisplay.setVisible(false);
           }else{
               playSound(errorSound);
               adminDisplay.setVisible(false);
+              wrongAdminDisplay.setVisible(false);
               new UI(3);
           }
       }
@@ -516,7 +527,7 @@ public class UI {
 
           //Check if password inputted is equal to correct password
           if (String.valueOf(txtPass.getPassword()).equals(password)){
-              playSound("res/sound/start2.wav");
+              playSound(startSound);
               setAuth(0);
               new UI(4); //Remember to add restricted authorization
               staffDisplay.setVisible(false);
@@ -587,7 +598,7 @@ public class UI {
       cmdInventory = new JButton  ("      Inventory        ", editicon);
       cmdInventory.setPreferredSize(new Dimension(150, 100));
 
-      cmdDunno = new JButton("  Clients  ", editicon);
+      cmdDunno = new JButton("      Clients            ", editicon);
       cmdDunno.setPreferredSize(new Dimension(150, 100));
 
       //Change this icon later
@@ -962,7 +973,7 @@ public class UI {
        
        //Add Button Listeners
        if(auth == 1){
-        createBtn.addActionListener(new AddButtonListener());
+        createBtn.addActionListener(new AddParishButtonListener());
         modifyBtn.addActionListener(new ModifyButtonListener());
         deleteBtn.addActionListener(new DeleteButtonListener());
         }
@@ -1118,7 +1129,14 @@ public class UI {
             playSound(buttonPressSound);
         }
     }
-
+    private class AddParishButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            new UI(10);
+        }
+    }
 
     private class ViewButtonListener implements ActionListener
     { 
@@ -1144,6 +1162,110 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
+        }
+    }
+    public void SelectParish()//(ArrayList<Promoter> proms)
+    {
+        JTextField  txtID;   
+        JButton     cmdSelect;
+        JButton      cmdClose;
+        JPanel      pnlCommand;
+        JPanel      pnlDisplay;
+        JLabel      instructions;
+
+        //Create Panels
+        pnlCommand = new JPanel();
+        pnlDisplay = new JPanel();
+
+        //Set properties of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.setLayout(new GridLayout(2,1));
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdSelect     = new JButton("Select", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdSelect.setSize(new Dimension(340, 100));
+        cmdSelect.setPreferredSize(new Dimension(73,40));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdSelect.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdSelect);
+        pnlCommand.add(cmdClose);
+
+        //Add instructions text to panel
+        instructions = new JLabel("Please Select A Parish");
+        instructions.setForeground(Color.WHITE);
+        pnlDisplay.add(instructions); 
+
+        //Create drop down box
+        final JComboBox dropDownBox =new JComboBox(Venue.PARISHES);
+        dropDownBoxMenu = dropDownBox;
+        pnlDisplay.add(dropDownBox);
+        dropDownBox.setBounds(50, 100,90,20);  
+
+
+        //Give Buttons ActionListeners
+        cmdSelect.addActionListener(new SelectParishButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        selectParishDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        selectParishDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(selectParishDisplay);
+    }
+
+    //Gets the selected data from Drop Down Menu
+    public void selected(String[] list){
+        String value1 = dropDownBoxMenu.getSelectedItem().toString();
+        String value = value1;
+        int index = Arrays.asList(list).indexOf(value);
+        for (int i=0; i<list.length;i++){
+            if (value.equals(String.valueOf(list))){
+                index = i;
+                break;
+            }
+        }
+        value = list[index]; //Stores the selected data in this variable
+        //System.out.println(value);
+        //This is the part where you do stuff with the selected data
+        //For example
+        //AddReservation(value); or something
+    }
+    private class SelectParishButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            selected(Venue.PARISHES);
+            selectParishDisplay.setVisible(false);
+            
+            //Eventually add a JPanel or whatever here that pops up and says "Successfully Edited" or something, idk
+        }
+    }
+    private class CloseButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            selectParishDisplay.setVisible(false);
         }
     }
 }
