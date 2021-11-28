@@ -587,7 +587,7 @@ public class UI {
       cmdInventory = new JButton  ("      Inventory        ", editicon);
       cmdInventory.setPreferredSize(new Dimension(150, 100));
 
-      cmdDunno = new JButton("  Dont Know Yet  ", editicon);
+      cmdDunno = new JButton("  Clients  ", editicon);
       cmdDunno.setPreferredSize(new Dimension(150, 100));
 
       //Change this icon later

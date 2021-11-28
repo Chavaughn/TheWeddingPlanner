@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Venue {
-    String venueName;
-    LocalDate date;
-    String location;
-    String venueID;
-    List<String> itemsNeeded = new ArrayList<String>();// Format: Item name, Amount needed, Grouping
+    private String venueName;
+    private LocalDate date;
+    private String location;
+    private String venueID;
+    private List<String> itemsNeeded = new ArrayList<String>();// Format: Item name, Amount needed, Grouping
 
     /**Constants */
     public final static String[] VENUE_TYPES = {"Hotel", "Beach-side", "Waterfall", "Church"};
@@ -28,6 +28,13 @@ public class Venue {
         this.date = LocalDate.of(date[0], date[1], date[2]);
         setLocation(location);
     }
+    /**Alt constructor */
+    public Venue(String venueName, int[] date, String location){
+        this.venueName = venueName;
+        this.date = LocalDate.of(date[0], date[1], date[2]);
+        setLocation(location);
+    }
+
     /**Alt constructor */
     public Venue(String venueName, String venueID, int[] date, String location, List<String> itemsNeeded){
         this.venueName = venueName;
