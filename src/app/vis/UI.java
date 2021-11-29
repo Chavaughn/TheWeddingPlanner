@@ -2,12 +2,24 @@ package app.vis;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import net.sourceforge.jdatepicker.impl.*;
+import net.sourceforge.jdatepicker.util.*; 
+
+import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import app.manage.Venue;
 
@@ -31,8 +43,13 @@ public class UI {
     private JFrame reservationDisplay = new JFrame();
     private JFrame venueDisplay = new JFrame();
     private JFrame inventoryDisplay = new JFrame();
-    private JFrame selectParishDisplay = new JFrame();
+    private JFrame createVenueDisplay = new JFrame();
+    private JFrame createReservationDisplay = new JFrame();
+    private JFrame clientDisplay = new JFrame();
+    private JFrame createClientDisplay = new JFrame();
+    private JFrame createInventoryItemDisplay = new JFrame();
     private JComboBox   dropDownBoxMenu;
+    private JComboBox   dropDownBoxVType;
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
 
@@ -48,6 +65,7 @@ public class UI {
     private final String listIcon = "src/res/icons/listicon.png";
     private final String deleteIcon = "src/res/icons/deleteIcon.png";
     private final String viewPastIcon = "src/res/icons/viewpasticon.png";
+    
 
 
     /**Souynd Constants */
@@ -87,7 +105,19 @@ public class UI {
                 Inventory(auth);
                 break;
             case 10:
-                SelectParish();
+                createVenue();
+                break;
+            case 11:
+                createReservation();
+                break;
+            case 12:
+                createInventoryItem();
+                break;
+            case 13:
+                ClientInfo(auth);
+                break;
+            case 14:
+                createClient();
                 break;
             default:
                 break;
@@ -221,7 +251,7 @@ public class UI {
             new UI(2);
         }
     }
-
+    //opens staff login
     private class StaffButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -229,8 +259,6 @@ public class UI {
             playSound(buttonPressSound);
             loginDisplay.setVisible(false);
             new UI(5);
-            //setVisible(false);
-            //new StaffLogin();
         }
     }
 
@@ -368,6 +396,7 @@ public class UI {
       wrongAdminDisplay.setVisible(true);
       }
   }
+  /* ------------------------------------ STAFF LOGIN SCREEN -------------------------------------*/
   public void StaffLogin(int state){
         this.state = state;
         JButton     cmdPass;
@@ -560,7 +589,7 @@ public class UI {
       JButton cmdReservation;
       JButton cmdVenue;
       JButton cmdInventory;
-      JButton cmdDunno;
+      JButton cmdClient;
       JButton cmdHistory;
       JButton cmdExit;
       JPanel pnlCommand;
@@ -598,8 +627,8 @@ public class UI {
       cmdInventory = new JButton  ("      Inventory        ", editicon);
       cmdInventory.setPreferredSize(new Dimension(150, 100));
 
-      cmdDunno = new JButton("      Clients            ", editicon);
-      cmdDunno.setPreferredSize(new Dimension(150, 100));
+      cmdClient = new JButton("      Clients            ", editicon);
+      cmdClient.setPreferredSize(new Dimension(150, 100));
 
       //Change this icon later
       cmdHistory = new JButton("     History             ", viewpasticon);
@@ -613,7 +642,7 @@ public class UI {
       cmdReservation.addActionListener(new ReservationButtonListener());
       cmdVenue.addActionListener(new VenueButtonListener());
       cmdInventory.addActionListener(new InventoryButtonListener());
-      cmdDunno.addActionListener(new DunnoButtonListener());
+      cmdClient.addActionListener(new ClientButtonListener());
       cmdHistory.addActionListener(new HistoryButtonListener());
       cmdExit.addActionListener(new ExitButtonListener());
      
@@ -631,9 +660,9 @@ public class UI {
       cmdInventory.setBorderPainted(false);
       cmdInventory.setForeground(Color.black);
 
-      cmdDunno.setBackground(new Color(226,228,233));
-      cmdDunno.setBorderPainted(false);
-      cmdDunno.setForeground(Color.black);
+      cmdClient.setBackground(new Color(226,228,233));
+      cmdClient.setBorderPainted(false);
+      cmdClient.setForeground(Color.black);
 
       cmdHistory.setBackground(new Color(226,228,233));
       cmdHistory.setBorderPainted(false);
@@ -654,7 +683,7 @@ public class UI {
       pnlCommand.add(cmdInventory);
       pnlCommand.add(Box.createRigidArea(new Dimension(0, 40)));  
 
-      pnlCommand.add(cmdDunno);
+      pnlCommand.add(cmdClient);
       pnlCommand.add(Box.createRigidArea(new Dimension(0, 40)));  
 
       pnlCommand.add(cmdHistory);
@@ -709,11 +738,13 @@ public class UI {
     }
 
 
-    private class DunnoButtonListener implements ActionListener
+    private class ClientButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
+            mainDisplay.setVisible(false);
+            new UI(13);
         }
     }
 
@@ -837,7 +868,7 @@ public class UI {
        
        //Add Button Listeners
        if(auth == 1){
-        createBtn.addActionListener(new AddButtonListener());
+        createBtn.addActionListener(new AddReservationButtonListener());
         modifyBtn.addActionListener(new ModifyButtonListener());
         deleteBtn.addActionListener(new DeleteButtonListener());
         }
@@ -861,6 +892,7 @@ public class UI {
             reservationDisplay.setVisible(false);
             venueDisplay.setVisible(false);
             inventoryDisplay.setVisible(false);
+            clientDisplay.setVisible(false);
             new UI(4);
         }
     }
@@ -973,7 +1005,7 @@ public class UI {
        
        //Add Button Listeners
        if(auth == 1){
-        createBtn.addActionListener(new AddParishButtonListener());
+        createBtn.addActionListener(new AddVenueButtonListener());
         modifyBtn.addActionListener(new ModifyButtonListener());
         deleteBtn.addActionListener(new DeleteButtonListener());
         }
@@ -1097,7 +1129,7 @@ public class UI {
        
         //Add button listeners
         if(auth == 1){
-            createBtn.addActionListener(new AddButtonListener());
+            createBtn.addActionListener(new AddInventoryButtonListener());
             modifyBtn.addActionListener(new ModifyButtonListener());
             deleteBtn.addActionListener(new DeleteButtonListener());
             }
@@ -1112,6 +1144,133 @@ public class UI {
        //Apply formatting to frame 
        packFrameLogin(inventoryDisplay);
     }
+    /* ------------------------------------ CLIENT SCREEN -------------------------------------*/
+    private void ClientInfo(int auth){
+        //System.out.println(this.auth);
+        this.auth = auth;
+        //System.out.println(auth);
+        JPanel guiCmds = new JPanel();
+        JPanel guiDisplay = new JPanel();
+        GridBagConstraints gbc;
+        JButton viewBtn;
+        JButton modifyBtn;
+        JButton deleteBtn;
+        JButton createBtn;
+        JButton backBtn;
+        JLabel Logo = new JLabel("<html><h1>Client Management</h1><html>");
+        
+        //Create Icons and Images
+        Icon addicon = new ImageIcon(addIcon);
+        Icon viewicon = new ImageIcon(listIcon);
+        Icon modifyicon = new ImageIcon(editIcon);
+        Icon deleteicon = new ImageIcon(deleteIcon);
+        Icon backicon = new ImageIcon(exitIcon);
+        Icon erroricon = new ImageIcon(errorIcon);
+        ImageIcon imgLogo = new ImageIcon(LogoImg);
+
+        //Change image of app
+        clientDisplay.setIconImage(imgLogo.getImage());
+
+        //Set the layout of the frame
+        clientDisplay.setLayout(new GridLayout(2, 1));
+
+        //Set the layout of the panels
+        guiCmds.setLayout(new GridBagLayout());
+        guiDisplay.setBounds(10,10,10,10);
+        guiCmds.setBorder(new EmptyBorder(new Insets(10, 50, 50, 40)));
+
+        //Create Buttons
+        if(auth == 1){
+        createBtn = new JButton("  Add Client      ", addicon);
+        viewBtn = new JButton(" View Clients   ", viewicon);
+        modifyBtn = new JButton(" Modify Client  ", modifyicon);
+        deleteBtn = new JButton("  Delete Client ", deleteicon);
+        backBtn = new JButton("Main Menu", backicon);
+        }
+        else{
+            createBtn = new JButton("  Add Client      ", erroricon);
+            viewBtn = new JButton(" View Clients   ", viewicon);
+            modifyBtn = new JButton(" Modify Client  ", erroricon);
+            deleteBtn = new JButton("  Delete Client ", erroricon);
+            backBtn = new JButton("Main Menu", backicon);
+        }
+        
+        //Create Logo and Grab Bag Constraints variable
+        Logo.setIcon(imgLogo);
+        Logo.setForeground(Color.WHITE);
+        Logo.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Logo.setHorizontalTextPosition(SwingConstants.CENTER);
+        gbc = new GridBagConstraints();
+
+        //Set the size of the buttons
+        createBtn.setSize(new Dimension(340, 100));
+        modifyBtn.setSize(new Dimension(340, 100));
+        viewBtn.setSize(new Dimension(340, 100));
+        deleteBtn.setSize(new Dimension(340, 100));
+        //backBtn.setSize(new Dimension(340, 100)); //Remove if not using Design 4
+
+        //Change background of buttons and panels
+        guiDisplay.setBackground(new Color(15, 17, 22));
+        guiCmds.setBackground(new Color(15, 17, 22));
+        createBtn.setBackground(new  Color(226,228,233));
+        viewBtn.setBackground(new  Color(226,228,233));
+        modifyBtn.setBackground(new  Color(226,228,233));
+        deleteBtn.setBackground(new Color(226,228,233));
+        deleteBtn.setForeground(new Color(221,55,78));
+        backBtn.setBackground(new Color(221,55,78));
+        backBtn.setForeground(Color.white);
+        
+       //Apply grid bag constraints to buttons
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 0;
+       guiCmds.add(createBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 0;
+
+       guiCmds.add(modifyBtn, gbc);
+       gbc.insets = i;
+       gbc.gridx = 0;  
+       gbc.gridy = 1;
+
+       guiCmds.add(deleteBtn, gbc); 
+       gbc.insets = i;
+       gbc.gridx = 1;  
+       gbc.gridy = 1;
+       guiCmds.add(viewBtn, gbc);
+       gbc.ipady = 5;  
+       gbc.gridx = 0;  
+       gbc.gridy = 2;  
+       gbc.fill = GridBagConstraints.HORIZONTAL;  //Change back to HORIZONTAL if using DESIGN 1 or 2, CENTER otherwise
+       gbc.gridwidth = 2;
+       guiCmds.add(backBtn, gbc);
+       
+       //Add logo to display
+       guiDisplay.add(Logo, BorderLayout.NORTH);
+
+       //Add panels to frame
+       clientDisplay.add(guiDisplay, BorderLayout.NORTH);
+       clientDisplay.add(guiCmds);
+       
+       //Add Button Listeners
+       if(auth == 1){
+        createBtn.addActionListener(new AddClientButtonListener());
+        modifyBtn.addActionListener(new ModifyButtonListener());
+        deleteBtn.addActionListener(new DeleteButtonListener());
+        }
+        else{
+            createBtn.addActionListener(new UnauthorizedButtonListener());
+            modifyBtn.addActionListener(new UnauthorizedButtonListener());
+            deleteBtn.addActionListener(new UnauthorizedButtonListener());
+        }
+        viewBtn.addActionListener(new ViewButtonListener());
+        backBtn.addActionListener(new BackToMainButtonListener());
+
+       //Apply formatting to frame 
+       packFrameLogin(clientDisplay);
+
+    }
 
     private class UnauthorizedButtonListener implements ActionListener
     {
@@ -1120,16 +1279,31 @@ public class UI {
             playSound(errorSound);
         }
     }
-
-    // These need to be finished
-    private class AddButtonListener implements ActionListener
+    private class AddClientButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
+            new UI(14);
         }
     }
-    private class AddParishButtonListener implements ActionListener
+    private class AddInventoryButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            new UI(12);
+        }
+    }
+    private class AddReservationButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            new UI(11);
+        }
+    }
+    private class AddVenueButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
@@ -1164,40 +1338,69 @@ public class UI {
             playSound(buttonPressSound);
         }
     }
-    public void SelectParish()//(ArrayList<Promoter> proms)
+    /* ------------------------------------ CREATE VENUE SCREEN -------------------------------------*/
+    public void createVenue()
     {
         JTextField  txtID;   
+        JTextField  txtName;
+        JTextField  txtLocation;
+        JTextField  txtItemsNeeded; 
+        //To do the itemsneeded part, I want to show all the names of the items in the spreadsheet in a dropdown
+        //Have them select the item name, then show them the quantity available, then enter in a jtextfield how much they want
+        //If the amount exceeds the quantity, add a note in the spreadsheet that says "X more [item name] needed for Y Venue"
+        //Do this once spreadsheet is done.
         JButton     cmdSelect;
-        JButton      cmdClose;
-        JPanel      pnlCommand;
-        JPanel      pnlDisplay;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
         JLabel      instructions;
+        JLabel      dateinstructions;
+        JLabel      title = new JLabel("<html><h>Create New Venue</h><html>");
 
-        //Create Panels
-        pnlCommand = new JPanel();
-        pnlDisplay = new JPanel();
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //Set properties of panels
+        //Create JDatepicker/Calendar
+        UtilDateModel model = new UtilDateModel();
+        JDatePanelImpl datePanel = new JDatePanelImpl(model);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
         pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         pnlDisplay.setBackground(new Color(15, 17, 22));
         pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
         txtID = new JTextField(5);
 
         //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
         txtID.setHorizontalAlignment(JTextField.CENTER);
-        pnlDisplay.setLayout(new GridLayout(2,1));
+        GridLayout layout = new GridLayout(6,2);
+
+        //Create spacing between interfaces
+        layout.setVgap(10);
+        layout.setHgap(-20);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
 
         //Create Icons For Buttons
         Icon selecticon = new ImageIcon("icons/addpromotericon.png");
         Icon closeicon = new ImageIcon("icons/exiticon.png");
 
         //Create Buttons
-        cmdSelect     = new JButton("Select", selecticon);
+        cmdSelect     = new JButton("Create", selecticon);
         cmdClose   = new JButton("Close", closeicon);
 
         //Set size of  buttons
         cmdSelect.setSize(new Dimension(340, 100));
-        cmdSelect.setPreferredSize(new Dimension(73,40));
+        cmdSelect.setPreferredSize(new Dimension(76,40));
         cmdClose.setSize(new Dimension(340, 100));
         cmdClose.setPreferredSize(new Dimension(75,40));
 
@@ -1210,26 +1413,65 @@ public class UI {
         pnlCommand.add(cmdSelect);
         pnlCommand.add(cmdClose);
 
-        //Add instructions text to panel
+        //Add Venue Name field
+        pnlDisplay.add(new JLabel("Enter Venue Name")).setForeground(Color.white);
+        txtName = new JTextField(20); 
+        //Prevent numbers from being entered
+        txtName.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtName.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') { //change this to add/exclude stuff if venue names have numbers in them
+                   txtName.setEditable(false);
+                } else {
+                   txtName.setEditable(true);
+                }
+             }
+            });
+        txtName.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtName);
+
+        //Add Parish selection instructions text to panel
         instructions = new JLabel("Please Select A Parish");
         instructions.setForeground(Color.WHITE);
         pnlDisplay.add(instructions); 
 
         //Create drop down box
-        final JComboBox dropDownBox =new JComboBox(Venue.PARISHES);
-        dropDownBoxMenu = dropDownBox;
-        pnlDisplay.add(dropDownBox);
-        dropDownBox.setBounds(50, 100,90,20);  
+        final JComboBox dropDownBox1 =new JComboBox(Venue.PARISHES);
+        final JComboBox dropDownBox2 =new JComboBox(Venue.VENUE_TYPES);
+        dropDownBoxMenu = dropDownBox1;
+        dropDownBoxVType = dropDownBox2;
+        pnlDisplay.add(dropDownBox1);
+        dropDownBox1.setBounds(50, 100,90,20);  
 
+        //Add Venue Type dropdown menu
+        pnlDisplay.add(new JLabel("Select Venue Type")).setForeground(Color.white);
+        pnlDisplay.add(dropDownBox2);
+        dropDownBox2.setBounds(50, 100,90,20);  
+
+        //Add date instructions text to panel
+        dateinstructions = new JLabel("Please Select A Date");
+        dateinstructions.setForeground(Color.WHITE);
+        pnlDisplay.add(dateinstructions); 
+
+        //Add date picker/calendar
+        pnlDisplay.add(datePicker);
+
+        //Add Estimated Price field
+        pnlDisplay.add(new JLabel("Enter Venue Location")).setForeground(Color.white);
+        txtLocation = new JTextField(30); 
+        txtLocation.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtLocation);
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new SelectParishButtonListener());
+        cmdSelect.addActionListener(new createVenueButtonListener());
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
-        selectParishDisplay.add(pnlDisplay, BorderLayout.CENTER);
-        selectParishDisplay.add(pnlCommand, BorderLayout.SOUTH);
-        packFrameLogin(selectParishDisplay);
+        createVenueDisplay.add(titlePanel, BorderLayout.NORTH);
+        createVenueDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createVenueDisplay);
     }
 
     //Gets the selected data from Drop Down Menu
@@ -1249,25 +1491,443 @@ public class UI {
         //For example
         //AddReservation(value); or something
     }
-    private class SelectParishButtonListener implements ActionListener
+    private class createVenueButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
             selected(Venue.PARISHES);
-            selectParishDisplay.setVisible(false);
+            createVenueDisplay.setVisible(false);
             
             //Eventually add a JPanel or whatever here that pops up and says "Successfully Edited" or something, idk
         }
+    }
+    /* ------------------------------------ CREATE RESERVATIONS SCREEN -------------------------------------*/
+    public void createReservation()
+    {
+        JTextField  txtID;   
+        JTextField  txtPrice;
+        JButton     cmdSelect;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
+        JLabel      instructions;
+        JLabel      dateinstructions1;
+        JLabel      dateinstructions2;
+        JLabel      title = new JLabel("<html><h>Create New Reservation</h><html>");
+
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        //Create JDatepicker/Calendar
+        UtilDateModel model1 = new UtilDateModel();
+        JDatePanelImpl datePanel1 = new JDatePanelImpl(model1);
+        UtilDateModel model2 = new UtilDateModel();
+        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2);
+        JDatePickerImpl datePicker1 = new JDatePickerImpl(datePanel1);
+        JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2);
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        GridLayout layout = new GridLayout(4,2);
+
+        //Create spacing between interfaces
+        layout.setVgap(10);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdSelect     = new JButton("Create", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdSelect.setSize(new Dimension(340, 100));
+        cmdSelect.setPreferredSize(new Dimension(76,40));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdSelect.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdSelect);
+        pnlCommand.add(cmdClose);
+
+        //Add date instructions text to panel
+        dateinstructions1 = new JLabel("Please Select A Wedding Date");
+        dateinstructions1.setForeground(Color.WHITE);
+        pnlDisplay.add(dateinstructions1); 
+
+        //Add date picker/calendar
+        pnlDisplay.add(datePicker1);
+
+        //Add date instructions text to panel
+        dateinstructions2 = new JLabel("Please Select A Reservation Date");
+        dateinstructions2.setForeground(Color.WHITE);
+        pnlDisplay.add(dateinstructions2); 
+
+        //Add date picker/calendar
+        pnlDisplay.add(datePicker2);
+
+        //Add Estimated Price field
+        pnlDisplay.add(new JLabel("Enter Estimated Price")).setForeground(Color.white);
+        txtPrice = new JTextField(20); 
+        //Only Allow Numbers To Be Entered
+        txtPrice.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtPrice.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9' || ke.getKeyChar() == KeyEvent.VK_BACK_SPACE || ke.getKeyChar() == KeyEvent.VK_DELETE) {
+                    txtPrice.setEditable(true);
+                } else {
+                    txtPrice.setEditable(false);
+                }
+             }
+            });
+        txtPrice.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtPrice);
+
+        //Give Buttons ActionListeners
+        cmdSelect.addActionListener(new createVenueButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        createReservationDisplay.add(titlePanel, BorderLayout.NORTH);
+        createReservationDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createReservationDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createReservationDisplay);
+    }
+    /* ------------------------------------ CREATE INVENTORY ITEM SCREEN -------------------------------------*/
+    public void createInventoryItem()
+    {
+        JTextField  txtID;   
+        JTextField  txtName;
+        JTextField  txtQuantity;
+        JButton     cmdSelect;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
+        JLabel      title = new JLabel("<html><h>Create New Inventory Item</h><html>");
+
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        GridLayout layout = new GridLayout(3,2);
+
+        //Create spacing between interfaces
+        layout.setVgap(10);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdSelect     = new JButton("Create", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdSelect.setSize(new Dimension(340, 100));
+        cmdSelect.setPreferredSize(new Dimension(76,40));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdSelect.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdSelect);
+        pnlCommand.add(cmdClose);
+
+        //Add Item Name Field
+        pnlDisplay.add(new JLabel("Enter Name of Item")).setForeground(Color.white);
+        txtName = new JTextField(30); 
+        //Prevent numbers from being entered
+        txtName.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtName.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                   txtName.setEditable(false);
+                } else {
+                   txtName.setEditable(true);
+                }
+             }
+            });
+        txtName.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtName);
+
+        //Add Quantity Field
+        pnlDisplay.add(new JLabel("Enter Quantity of Item")).setForeground(Color.white);
+        txtQuantity = new JTextField(5); 
+
+        //Only Allow Numbers To Be Entered
+        txtQuantity.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtQuantity.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9' || ke.getKeyChar() == KeyEvent.VK_BACK_SPACE || ke.getKeyChar() == KeyEvent.VK_DELETE) {
+                    txtQuantity.setEditable(true);
+                } else {
+                    txtQuantity.setEditable(false);
+                }
+             }
+            });
+        txtQuantity.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtQuantity);
+
+        //Give Buttons ActionListeners
+        cmdSelect.addActionListener(new createVenueButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        createInventoryItemDisplay.add(titlePanel, BorderLayout.NORTH);
+        createInventoryItemDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createInventoryItemDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createInventoryItemDisplay);
+    }
+    /* ------------------------------------ CREATE CLIENT SCREEN -------------------------------------*/
+    public void createClient()
+    {
+        JTextField  txtID;   
+        JTextField  txtName;
+        JTextField  txtEmail;
+        JTextField  txtPhoneNum;
+        JButton     cmdSelect;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
+        JLabel      dateinstructions;
+        JLabel      warning;
+        JLabel      title = new JLabel("<html><h>Add New Client</h><html>");
+
+        //Create JDatepicker/Calendar
+        UtilDateModel model = new UtilDateModel();
+        JDatePanelImpl datePanel = new JDatePanelImpl(model);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
+
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        GridLayout layout = new GridLayout(5,2);
+
+        //Create spacing between interfaces
+        layout.setVgap(10);
+        layout.setHgap(10);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdSelect     = new JButton("Add", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdSelect.setSize(new Dimension(340, 100));
+        cmdSelect.setPreferredSize(new Dimension(76,40));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdSelect.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdSelect);
+        pnlCommand.add(cmdClose);
+
+        //Add Item Name Field
+        pnlDisplay.add(new JLabel("Enter Name of Client")).setForeground(Color.white);
+        txtName = new JTextField(20); 
+        //Prevent numbers from being entered
+        txtName.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtName.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                   txtName.setEditable(false);
+                } else {
+                   txtName.setEditable(true);
+                }
+             }
+            });
+        txtName.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtName);
+
+        //Add date instructions text to panel
+        dateinstructions = new JLabel("Please Enter Client D.O.B");
+        dateinstructions.setForeground(Color.WHITE);
+        pnlDisplay.add(dateinstructions); 
+
+        //Add date picker/calendar
+        pnlDisplay.add(datePicker);
+
+        //Add Email Field
+        pnlDisplay.add(new JLabel("Enter Emaiil of Client 'none' if not available")).setForeground(Color.white);
+        txtEmail = new JTextField(20); 
+        txtEmail.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtEmail);
+
+        //Add Phone Number Field
+        pnlDisplay.add(new JLabel("Enter Phone # of Client [Include Area Code]")).setForeground(Color.white);
+        txtPhoneNum = new JTextField(10); 
+
+        //Only Allow Numbers To Be Entered
+        txtPhoneNum.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent ke) {
+                String value = txtPhoneNum.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9' || ke.getKeyChar() == KeyEvent.VK_BACK_SPACE || ke.getKeyChar() == KeyEvent.VK_DELETE) {
+                   txtPhoneNum.setEditable(true);
+                } else {
+                   txtPhoneNum.setEditable(false);
+                }
+             }
+            });
+        //Set text to center and add to panel
+        txtPhoneNum.setHorizontalAlignment(JTextField.CENTER);
+        pnlDisplay.add(txtPhoneNum);
+
+        //Give Buttons ActionListeners
+        cmdSelect.addActionListener(new createVenueButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        createClientDisplay.add(titlePanel, BorderLayout.NORTH);
+        createClientDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createClientDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createClientDisplay);
     }
     private class CloseButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
-            selectParishDisplay.setVisible(false);
+            createVenueDisplay.setVisible(false);
+            createReservationDisplay.setVisible(false);
+            createClientDisplay.setVisible(false);
+            createInventoryItemDisplay.setVisible(false);
+
         }
-    }
+    }/* Might figure out how to use this to change the entered price to look like currency when they click off the jtextfield
+    public class FocusEvent implements FocusListener{
+        public FocusEvent() {
+
+            JTextField textField = new JTextField("A TextField");
+            textField.addFocusListener(this);
+
+            JLabel label = new JLabel("A Label");
+            label.addFocusListener(this);
+
+            JComboBox comboBox = new JComboBox(vector);
+            comboBox.addFocusListener(this);
+
+            JButton button = new JButton("A Button");
+            button.addFocusListener(this);
+
+            JList list = new JList(listVector);
+            list.setSelectedIndex(1); //It's easier to see the focus change
+                                      //if an item is selected.
+            list.addFocusListener(this);
+            JScrollPane listScrollPane = new JScrollPane(list);
+            
+
+    
+            //Set up the area that reports focus-gained and focus-lost events.
+            display = new JTextArea();
+            display.setEditable(false);
+            //The method setRequestFocusEnabled prevents a
+            //component from being clickable, but it can still
+            //get the focus through the keyboard - this ensures
+            //user accessibility.
+            display.setRequestFocusEnabled(false);
+            display.addFocusListener(this);
+            JScrollPane displayScrollPane = new JScrollPane(display);
+    
+     
+        }
+
+        public void focusGained(FocusEvent e) {
+            displayMessage("Focus gained", e);
+        }
+    
+        public void focusLost(FocusEvent e) {
+            displayMessage("Focus lost", e);
+        }
+    
+        void displayMessage(String prefix, FocusEvent e) {
+            display.append(prefix
+                           + (e.isTemporary() ? " (temporary):" : ":")
+                           +  e.getComponent().getClass().getName()
+                           + "; Opposite component: " 
+                           + (e.getOppositeComponent() != null ?
+                              e.getOppositeComponent().getClass().getName() : "null")
+                           + newline); 
+        }
+
+    }*/
 }
 
 class MyDefaultMetalTheme extends DefaultMetalTheme {
