@@ -2,8 +2,11 @@ package app.manage;
 
 import java.util.List;
 
+import app.util.Spreadsheet;
+
 public class VenueManagement {
     private Venue venue;
+    private Spreadsheet spreadsheet;
     List<String> x;
 
     public Venue createVenue(String name, String Location,int[] date){
@@ -12,7 +15,7 @@ public class VenueManagement {
     }
 
     public List<String> viewAllVenues(){
-        return x;
+        return spreadsheet.readSheet("Venue");
     }
 
     public void editVenue(String venueId){
