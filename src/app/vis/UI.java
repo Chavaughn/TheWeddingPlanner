@@ -20,6 +20,7 @@ import net.sourceforge.jdatepicker.impl.*;
 import net.sourceforge.jdatepicker.util.*; 
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.table.DefaultTableModel;
 
 import app.manage.Venue;
 
@@ -31,6 +32,7 @@ import java.util.Arrays;
 
 public class UI {
     private int state;
+    private int type;
     private JPasswordField  txtPass;    //entered password
     private String      password;       //correct password
     private JLabel      label;
@@ -48,6 +50,7 @@ public class UI {
     private JFrame clientDisplay = new JFrame();
     private JFrame createClientDisplay = new JFrame();
     private JFrame createInventoryItemDisplay = new JFrame();
+    private JFrame viewListDisplay = new JFrame();
     private JComboBox   dropDownBoxMenu;
     private JComboBox   dropDownBoxVType;
     private int top = 1, left = 1, bottom = 1, right = 1;
@@ -119,6 +122,9 @@ public class UI {
             case 14:
                 createClient();
                 break;
+            case 15:
+                ViewList(type);
+                break;
             default:
                 break;
         }
@@ -126,6 +132,10 @@ public class UI {
     public int setAuth(int i){
         auth = i;
         return auth;
+    }
+    public int setType(int i){
+        type = i;
+        return type;
     }
     /* ------------------------------------ ENTRY SCREEN -------------------------------------*/
     private void StartLogin(){
@@ -1317,6 +1327,7 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
+            new UI(15);
         }
 
     }
@@ -1825,7 +1836,7 @@ public class UI {
         pnlDisplay.add(datePicker);
 
         //Add Email Field
-        pnlDisplay.add(new JLabel("Enter Emaiil of Client 'none' if not available")).setForeground(Color.white);
+        pnlDisplay.add(new JLabel("Enter Email of Client 'none' if not available")).setForeground(Color.white);
         txtEmail = new JTextField(20); 
         txtEmail.setHorizontalAlignment(JTextField.CENTER);
         pnlDisplay.add(txtEmail);
@@ -1859,6 +1870,137 @@ public class UI {
         createClientDisplay.add(pnlDisplay, BorderLayout.CENTER);
         createClientDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(createClientDisplay);
+    }
+    /* ------------------------------------ VIEW SCREEN -------------------------------------*/
+    public void ViewList(int type) {
+        this.type = type;
+        JButton     cmdAddPromoter;
+        JButton     cmdEditPromoter;
+        JButton     cmdClose;
+        JButton     cmdSortBudget;
+        JButton     cmdSortName;
+        JButton     cmdSave;
+        JButton     cmdDontSave;
+        JPanel      pnlCommand;
+        JPanel      pnlDisplay;
+        JScrollPane scrollPane;
+        JTable      table;
+        DefaultTableModel model;
+
+        pnlCommand = new JPanel();
+        pnlDisplay = new JPanel();
+        viewListDisplay.setLayout(new GridLayout(2,1));
+        pnlCommand.setBackground(new Color(239,255,239));
+        
+        if(type == 1){//Client view
+            String[] columnNames =  {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"};
+            model=new DefaultTableModel(columnNames,0);
+            table = new JTable(model);
+            table.setBackground(new Color(239,255,239));
+        
+        
+            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+            table.setFillsViewportHeight(true);
+    
+            scrollPane = new JScrollPane(table);
+            viewListDisplay.add(scrollPane);
+        }
+        else if(type == 2){//Reservation view
+            String[] columnNames =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
+            model=new DefaultTableModel(columnNames,0);
+            table = new JTable(model);
+            table.setBackground(new Color(239,255,239));
+        
+        
+            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+            table.setFillsViewportHeight(true);
+    
+            scrollPane = new JScrollPane(table);
+            viewListDisplay.add(scrollPane);
+        }
+        else if(type == 3){//Venue view
+            String[] columnNames =  {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"};
+            model=new DefaultTableModel(columnNames,0);
+            table = new JTable(model);
+            table.setBackground(new Color(239,255,239));
+        
+        
+            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+            table.setFillsViewportHeight(true);
+    
+            scrollPane = new JScrollPane(table);
+            viewListDisplay.add(scrollPane);
+        }
+        else if(type == 4){//Inventory view
+            String[] columnNames =  {"Name", "Quantity"};
+            model=new DefaultTableModel(columnNames,0);
+            table = new JTable(model);
+            table.setBackground(new Color(239,255,239));
+        
+        
+            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+            table.setFillsViewportHeight(true);
+    
+            scrollPane = new JScrollPane(table);
+            viewListDisplay.add(scrollPane);
+        }
+        //showTable();
+
+
+       //Create icons for buttons
+       //Icon sortbudgeticon = new ImageIcon("icons/sorticon.png");
+       Icon exiticon = new ImageIcon("icons/exiticon.png");
+       //Icon sortnameicon = new ImageIcon("icons/sorticon.png");
+       Icon saveicon = new ImageIcon("icons/saveicon.png");
+
+
+        //Create Buttons
+        //cmdSortBudget  = new JButton("Sort by Budget", sortbudgeticon);
+        cmdClose   = new JButton("Close", exiticon);
+        //cmdSortName = new JButton("Sort by Name", sortnameicon);
+        cmdSave = new JButton("Save Changes", saveicon);
+
+
+        //Set Background Colours
+        //cmdSortBudget.setBackground(new Color(238,232,170));
+        cmdClose.setBackground(new Color(238,232,170));
+        cmdSave.setBackground(new Color(238,232,170));
+        //cmdSortName.setBackground(new Color(238,232,170));
+
+
+        //Add ActionListeners to Buttons
+        cmdClose.addActionListener(new CloseButtonListener());
+        cmdSave.addActionListener(new CloseButtonListener()); //Save not implemented
+        //cmdSortBudget.addActionListener(new SortBudgetButtonListener());
+        //cmdSortName.addActionListener(new SortNameButtonListener());
+        
+
+        //Add Buttons to the Screen
+        //pnlCommand.add(cmdSortBudget);
+        //pnlCommand.add(cmdSortName);
+        pnlCommand.add(cmdClose);
+        pnlCommand.add(cmdSave);
+       
+
+        viewListDisplay.add(pnlCommand);
+        viewListDisplay.pack();
+        viewListDisplay.setResizable(false);
+        viewListDisplay.setLocationRelativeTo(null);
+        viewListDisplay.setVisible(true);
+    }
+
+
+    private void showTable()//Put the list of things you want in the table between the () if you wanna use this
+    {
+       /*if (list.size()>0)
+        for (String i : list){
+            addToTable(i);
+        }How it'd be done ^*/
+    }
+    private void addToTable(){//Put variable you want to add in the () if you wanna use this
+        //String name= variable.getName();
+        //String[] item={name,""+ variable.getQuantity()};
+        //model.addRow(item);
     }
     private class CloseButtonListener implements ActionListener
     {
