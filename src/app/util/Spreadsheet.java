@@ -235,7 +235,6 @@ public class Spreadsheet {
                           break;
                         default:
                         }
-                    
                 }
                
                 vallist.add(Arrays.toString(cellval.toArray(new String[0])));
