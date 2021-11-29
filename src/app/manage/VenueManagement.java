@@ -1,18 +1,19 @@
 package app.manage;
 
-import java.util.List;
+import java.util.ArrayList;
+import app.util.Spreadsheet;
 
 public class VenueManagement {
     private Venue venue;
-    List<String> x;
+    private Spreadsheet spreadsheet;
 
     public Venue createVenue(String name, String Location,int[] date){
         venue = new Venue(name, date, Location);
         return this.venue;
     }
 
-    public List<String> viewAllVenues(){
-        return x;
+    public ArrayList<String> viewAllVenues(){
+        return spreadsheet.readSheet("Venue");
     }
 
     public void editVenue(String venueId){

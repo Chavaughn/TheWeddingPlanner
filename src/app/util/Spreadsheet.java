@@ -5,6 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -29,18 +33,30 @@ import app.manage.Venue;
 
 public class Spreadsheet {
 
-    File file = new File("The_Wedding_Planner.xlsx");
-    FileInputStream fis = new FileInputStream(file);
-    static XSSFWorkbook workbook = new XSSFWorkbook();
-    XSSFSheet userSheet = workbook.createSheet("User");
-    XSSFSheet venueSheet = workbook.createSheet("Venue");
-    XSSFSheet inventorySheet = workbook.createSheet("Inventory");
-    XSSFSheet clientSheet = workbook.createSheet("Client");
-    XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
-    XSSFSheet itemSheet = workbook.createSheet("Items");
+    private File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+    private FileInputStream fis = new FileInputStream(file);
+    private XSSFWorkbook workbook = new XSSFWorkbook();
+    private XSSFSheet userSheet = workbook.createSheet("User");
+    private XSSFSheet venueSheet = workbook.createSheet("Venue");
+    private XSSFSheet inventorySheet = workbook.createSheet("Inventory");
+    private XSSFSheet clientSheet = workbook.createSheet("Client");
+    private XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
+    private XSSFSheet itemSheet = workbook.createSheet("Items");
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
+        try {
+            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+            
+            if(!daf.exists() ) {
+                daf.createNewFile();
+             }
+           
+        }catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
         if (!filecheck()){
             workbook = new XSSFWorkbook(fis);
         }
@@ -105,10 +121,22 @@ public class Spreadsheet {
         {
             e.printStackTrace();
         }
+
+        User user = new User("Richard", "12","pass",2);
+        writeUserSheet(user);
+        user = new User("Simon", "13","pass",1);
+        writeUserSheet(user);
+
+        int[] intArray = new int[]{2021,2,27}; 
+        Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        writeVenueSheet(venue);
+
+        Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        writeClientSheet(client);
        
     }
 
-    public static void writeUserSheet(User user) throws FileNotFoundException, IOException{
+    public void writeUserSheet(User user) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("User").getLastRowNum();
         Row row =  workbook.getSheet("User").createRow(++rowCount);
@@ -125,13 +153,13 @@ public class Spreadsheet {
             workbook.getSheet("User").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
     }
 
-    static void writeVenueSheet(Venue venue) throws FileNotFoundException, IOException{
+    public void writeVenueSheet(Venue venue) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("Venue").getLastRowNum();
         Row row =  workbook.getSheet("Venue").createRow(++rowCount);
@@ -151,13 +179,13 @@ public class Spreadsheet {
             workbook.getSheet("Venue").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
     }
 
-    public static void writeClientSheet(Client client) throws FileNotFoundException, IOException{
+    public void writeClientSheet(Client client) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("Client").getLastRowNum();
         Row row =  workbook.getSheet("Client").createRow(++rowCount);
@@ -180,12 +208,41 @@ public class Spreadsheet {
             workbook.getSheet("Client").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
     }
 
+
+    public ArrayList<String> readSheet(String sheetName){
+        Iterator<Row> rowIter = workbook.getSheet(sheetName).iterator();
+
+        ArrayList<String> cellval = new ArrayList<>() ;
+
+        ArrayList<String> vallist = new ArrayList<String>() ;
+            while (rowIter.hasNext()) {
+                Row myRow = rowIter.next();
+                Iterator<Cell> cellIter = myRow.cellIterator();
+                while (cellIter.hasNext()) {
+                    Cell myCell = cellIter.next();
+                    switch (myCell.getCellType()) {
+                        case STRING:
+                          cellval.add(myCell.getStringCellValue());
+                          break;
+                        case NUMERIC:
+                          cellval.add(""+myCell.getNumericCellValue());
+                          break;
+                        default:
+                        }
+                }
+               
+                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                cellval.clear();
+               
+            }
+        return vallist;
+    }
 
 
     private boolean filecheck(){
@@ -196,34 +253,9 @@ public class Spreadsheet {
             return false;
 
     }
-    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException {
-        try {
-            File daf = new File("The_Wedding_Planner.xlsx");
-            
-            if(!daf.exists() ) {
-                daf.createNewFile();
-             }
-           
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();}
-
-        Spreadsheet spreadsheet = new Spreadsheet();
-
-        // User user = new User("Richard", "12","pass",2);
-        // writeUserSheet(user);
-        // user = new User("Simon", "13","pass",1);
-        // writeUserSheet(user);
-
-        // int[] intArray = new int[]{2021,2,27}; 
-        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
-        // writeVenueSheet(venue);
-
-        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
-        // writeClientSheet(client);
-        
-
-       
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException 
+    {
+        new Spreadsheet();
     }
 }
 
