@@ -5,6 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -29,7 +33,7 @@ import app.manage.Venue;
 
 public class Spreadsheet {
 
-    File file = new File("The_Wedding_Planner.xlsx");
+    File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
     FileInputStream fis = new FileInputStream(file);
     static XSSFWorkbook workbook = new XSSFWorkbook();
     XSSFSheet userSheet = workbook.createSheet("User");
@@ -125,7 +129,7 @@ public class Spreadsheet {
             workbook.getSheet("User").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
@@ -151,7 +155,7 @@ public class Spreadsheet {
             workbook.getSheet("Venue").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
@@ -180,10 +184,101 @@ public class Spreadsheet {
             workbook.getSheet("Client").autoSizeColumn(x);
         } 
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File("The_Wedding_Planner.xlsx"))) {
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
             workbook.write(outputStream);
         }
 
+    }
+
+
+    public static ArrayList<String> readVenueSheet(){
+        Iterator<Row> rowIter = workbook.getSheet("Venue").iterator();
+
+        ArrayList<String> cellval = new ArrayList<>() ;
+
+        ArrayList<String> vallist = new ArrayList<String>() ;
+            while (rowIter.hasNext()) {
+                Row myRow = rowIter.next();
+                Iterator<Cell> cellIter = myRow.cellIterator();
+                while (cellIter.hasNext()) {
+                    Cell myCell = cellIter.next();
+                    switch (myCell.getCellType()) {
+                        case STRING:
+                          cellval.add(myCell.getStringCellValue());
+                          break;
+                        case NUMERIC:
+                          cellval.add(""+myCell.getNumericCellValue());
+                          break;
+                        default:
+                        }
+                    
+                }
+               
+                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                cellval.clear();
+               
+            }
+        return vallist;
+    }
+
+    public static ArrayList<String> readUserSheet(){
+        Iterator<Row> rowIter = workbook.getSheet("User").iterator();
+
+        ArrayList<String> cellval = new ArrayList<>() ;
+
+        ArrayList<String> vallist = new ArrayList<String>() ;
+            while (rowIter.hasNext()) {
+                Row myRow = rowIter.next();
+                Iterator<Cell> cellIter = myRow.cellIterator();
+                while (cellIter.hasNext()) {
+                    Cell myCell = cellIter.next();
+                    switch (myCell.getCellType()) {
+                        case STRING:
+                          cellval.add(myCell.getStringCellValue());
+                          break;
+                        case NUMERIC:
+                          cellval.add(""+myCell.getNumericCellValue());
+                          break;
+                        default:
+                        }
+                    
+                }
+               
+                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                cellval.clear();
+               
+            }
+        return vallist;
+    }
+
+    public static ArrayList<String> readClientSheet(){
+        Iterator<Row> rowIter = workbook.getSheet("Client").iterator();
+
+        ArrayList<String> cellval = new ArrayList<>() ;
+
+        ArrayList<String> vallist = new ArrayList<String>() ;
+            while (rowIter.hasNext()) {
+                Row myRow = rowIter.next();
+                Iterator<Cell> cellIter = myRow.cellIterator();
+                while (cellIter.hasNext()) {
+                    Cell myCell = cellIter.next();
+                    switch (myCell.getCellType()) {
+                        case STRING:
+                          cellval.add(myCell.getStringCellValue());
+                          break;
+                        case NUMERIC:
+                          cellval.add(""+myCell.getNumericCellValue());
+                          break;
+                        default:
+                        }
+                    
+                }
+               
+                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                cellval.clear();
+               
+            }
+        return vallist;
     }
 
 
@@ -198,7 +293,7 @@ public class Spreadsheet {
     }
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException {
         try {
-            File daf = new File("The_Wedding_Planner.xlsx");
+            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
             
             if(!daf.exists() ) {
                 daf.createNewFile();
@@ -210,18 +305,22 @@ public class Spreadsheet {
 
         Spreadsheet spreadsheet = new Spreadsheet();
 
-        // User user = new User("Richard", "12","pass",2);
-        // writeUserSheet(user);
-        // user = new User("Simon", "13","pass",1);
-        // writeUserSheet(user);
+        User user = new User("Richard", "12","pass",2);
+        writeUserSheet(user);
+        user = new User("Simon", "13","pass",1);
+        writeUserSheet(user);
 
-        // int[] intArray = new int[]{2021,2,27}; 
-        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
-        // writeVenueSheet(venue);
+        int[] intArray = new int[]{2021,2,27}; 
+        Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        writeVenueSheet(venue);
 
-        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
-        // writeClientSheet(client);
-        
+        Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        writeClientSheet(client);
+    
+        System.out.println(readUserSheet());
+        System.out.println(readVenueSheet());
+        System.out.println(readClientSheet());
+
 
        
     }
