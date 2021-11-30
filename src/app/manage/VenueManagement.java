@@ -11,8 +11,14 @@ public class VenueManagement {
     private Venue venue;
     private Spreadsheet spreadsheet;
 
-    public Venue createVenue(String name, String Location,int[] date){
-        venue = new Venue(name, date, Location);
+    public Venue createVenue(String name, String Location,int[] date, String venType){
+        venue = new Venue(name, date, venType,Location);
+        try {
+            spreadsheet = new Spreadsheet();
+            spreadsheet.writeVenueSheet(venue);
+        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            e.printStackTrace();
+        }
         return this.venue;
     }
 

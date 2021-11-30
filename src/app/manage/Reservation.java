@@ -1,36 +1,42 @@
 package app.manage;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 
-public class Reservation{
+public class Reservation extends Client{
     private int resId;
-    private ArrayList<Integer> potentialVenues;
+    private LocalDate weddingDate;
+    private LocalDate resDate;
+    private double appPrice;
 
+    
     public Reservation(){
     }
 
-    public Reservation(int resId){
-        this.resId = resId;
-    }
-
-    public Reservation(int resId, ArrayList<Integer> potentialVenues){
-        this.resId = resId;
-        this.potentialVenues = potentialVenues;
+    public Reservation(String name, int[] dOB, String email, String phoneNumber, double appPrice){
+        super(name, dOB, email, phoneNumber);
+        this.resId=super.getClientId();
+        this.appPrice = appPrice;
     }
 
     public void addVenuetoReservation(int venId){
 
     }
 
-    public void setPotentialVenue(int venId){
-        this.potentialVenues.add(venId);
-    }
-
-    public ArrayList<Integer> getPotentialVenues(){
-        return this.potentialVenues;
-    }
-
-    public int getReservationId(){
+    public int getResId(){
         return this.resId;
+    }
+
+    public double getappPrice(){
+        return appPrice;
+    }
+
+    /**RETURNS the Date of the wedding of the reservation object */
+    public LocalDate getWeddingDate(){
+        return this.weddingDate;
+    }
+
+    /**RETURNS the Date the reservation was made of the reservation object */
+    public LocalDate getResDate(){
+        return this.resDate;
     }
 }
