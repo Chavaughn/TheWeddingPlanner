@@ -45,17 +45,7 @@ public class Spreadsheet {
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
-        try {
-            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-            
-            if(!daf.exists() ) {
-                daf.createNewFile();
-             }
-           
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
+       
 
         if (!filecheck()){
             workbook = new XSSFWorkbook(fis);
@@ -81,13 +71,10 @@ public class Spreadsheet {
                 
                 if (Integer.parseInt(key) == (i+1)){
                     row = currsheet.createRow(rownum);
-                    System.out.println(Integer.parseInt(key)+"  "+(i+1));
                     Object [] objArr = data.get(key);
                     int cellnum = 0;
                     for (Object obj : objArr)
                     {
-                        
-                        System.out.println((String)obj);
                         
                         Cell cell = row.createCell(cellnum++);
                         if(obj instanceof String)
@@ -122,17 +109,17 @@ public class Spreadsheet {
             e.printStackTrace();
         }
 
-        User user = new User("Richard", "12","pass",2);
-        writeUserSheet(user);
-        user = new User("Simon", "13","pass",1);
-        writeUserSheet(user);
+        // User user = new User("Richard", "12","pass",2);
+        // writeUserSheet(user);
+        // user = new User("Simon", "13","pass",1);
+        // writeUserSheet(user);
 
-        int[] intArray = new int[]{2021,2,27}; 
-        Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
-        writeVenueSheet(venue);
+        // int[] intArray = new int[]{2021,2,27}; 
+        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        // writeVenueSheet(venue);
 
-        Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
-        writeClientSheet(client);
+        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        // writeClientSheet(client);
        
     }
 
@@ -170,7 +157,7 @@ public class Spreadsheet {
         cell.setCellValue(venue.getVenueId());
 
         cell = row.createCell(2);
-        cell.setCellValue(venue.getDate());
+        cell.setCellValue(venue.getDate().toString());
 
         cell = row.createCell(4);
         cell.setCellValue(venue.getLocation());
@@ -193,7 +180,7 @@ public class Spreadsheet {
         cell.setCellValue(client.getClientName());
 
         cell = row.createCell(1);
-        cell.setCellValue(client.getDateOfBirth());
+        cell.setCellValue(client.getDateOfBirth().toString());
 
         cell = row.createCell(2);
         cell.setCellValue(client.getAge());
@@ -215,12 +202,12 @@ public class Spreadsheet {
     }
 
 
-    public ArrayList<String> readSheet(String sheetName){
+    public ArrayList<String[]> readSheet(String sheetName){
         Iterator<Row> rowIter = workbook.getSheet(sheetName).iterator();
 
         ArrayList<String> cellval = new ArrayList<>() ;
 
-        ArrayList<String> vallist = new ArrayList<String>() ;
+        ArrayList<String[]> vallist = new ArrayList<String[]>() ;
             while (rowIter.hasNext()) {
                 Row myRow = rowIter.next();
                 Iterator<Cell> cellIter = myRow.cellIterator();
@@ -237,7 +224,7 @@ public class Spreadsheet {
                         }
                 }
                
-                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                vallist.add(cellval.toArray(new String[0]));
                 cellval.clear();
                
             }

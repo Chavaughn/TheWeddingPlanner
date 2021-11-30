@@ -1,6 +1,10 @@
 package app.manage;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import app.util.Spreadsheet;
 
 public class ClientManagement {
@@ -10,7 +14,12 @@ public class ClientManagement {
         return new Client(name, dOB, age, email, phoneNumber);
     }
     
-    public ArrayList<String> viewAllClients(){
+    public ArrayList<String[]> viewAllClients(){
+        try {
+            spreadsheet = new Spreadsheet();
+        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            e.printStackTrace();
+        }
         return spreadsheet.readSheet("Client");
     }
 

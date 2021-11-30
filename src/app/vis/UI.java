@@ -23,17 +23,19 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.DefaultTableModel;
 
 import app.manage.ClientManagement;
+import app.manage.Reservation;
 import app.manage.Venue;
+import app.manage.VenueManagement;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
 
 public class UI {
     private int state;
-    private int type;
+    private static int type;
     private JPasswordField  txtPass;    //entered password
     private String      password;       //correct password
     private JLabel      label;
@@ -102,12 +104,15 @@ public class UI {
                 break;
             case 7:
                 Reservations(auth);
+                setType(2);
                 break;
             case 8:
                 Venues(auth);
+                setType(3);
                 break;
             case 9:
                 Inventory(auth);
+                setType(4);
                 break;
             case 10:
                 createVenue();
@@ -120,12 +125,13 @@ public class UI {
                 break;
             case 13:
                 ClientInfo(auth);
+                setType(1);
                 break;
             case 14:
                 createClient();
                 break;
             case 15:
-                ViewList(type);
+                ViewList(UI.type);
                 break;
             default:
                 break;
@@ -135,9 +141,8 @@ public class UI {
         auth = i;
         return auth;
     }
-    public int setType(int i){
-        type = i;
-        return type;
+    public void setType(int i){
+        UI.type = i;
     }
     public DefaultTableModel setModel(String[] columnNam){
         model=new DefaultTableModel(columnNam,0);
@@ -254,6 +259,17 @@ public class UI {
     }
 
     public static void main(String[] args) {
+        try {
+            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+            
+            if(!daf.exists() ) {
+                daf.createNewFile();
+             }
+           
+        }catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         new UI(1);
     }
 
@@ -1892,44 +1908,51 @@ public class UI {
         JScrollPane scrollPane;
         JTable      table;
         //DefaultTableModel model;
-        ArrayList<String> clientList;
-        //String[]    columnNames;
+        ArrayList<String[]> clientList = new ArrayList<String[]>();
+        String[]    columnNames = {};
 
         pnlCommand = new JPanel();
         pnlDisplay = new JPanel();
         viewListDisplay.setLayout(new GridLayout(2,1));
         pnlCommand.setBackground(new Color(239,255,239));
-        /*
+       
         if(type == 1){//Client view
             String[] columnName =  {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"};
+            ClientManagement clientMang = new ClientManagement();
+            clientList = clientMang.viewAllClients();
             columnNames = columnName;
         }
         else if(type == 2){//Reservation view
             String[] columnName =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
+            Reservation res = new Reservation();
+            // clientList = res.viewAllReservations();
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
             String[] columnName =  {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"};
+            VenueManagement ven = new VenueManagement();
+            clientList = ven.viewAllVenues();
             columnNames = columnName;
         }
         else if(type == 4){//Inventory view
+        }
 
-        }*/
-        String[] columnNames =  {"Name", "Quantity"};
+        
+
         //columnNames = columnName;
-        ClientManagement clientMang = new ClientManagement();
         //System.out.println(clientMang.viewAllClients());
-        clientList = clientMang.viewAllClients();
+        
+        model = new DefaultTableModel(columnNames,0);
+        table = new JTable(model);
         showTable(clientList);
 
         setModel(columnNames);
-        table = new JTable(model);
         table.setBackground(new Color(239,255,239));
     
     
-        table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+        table.setPreferredScrollableViewportSize(new Dimension(500, clientList.size()*15+50));
         table.setFillsViewportHeight(true);
-
+        
         scrollPane = new JScrollPane(table);
         viewListDisplay.add(scrollPane);
 
@@ -1975,21 +1998,22 @@ public class UI {
     }
 
 
-    private void showTable(ArrayList<String> list)//Put the list of things you want in the table between the () if you wanna use this
+    private void showTable(ArrayList<String[]> list)//Put the list of things you want in the table between the () if you wanna use this
     {
-        System.out.println("Happened");
-       if (list.size()>0)
-        System.out.println("if worked");
-        for (String i : list){
-            System.out.println(i);
-            addToTable(i);
+        if (list.size()>0){
+            for (int i=1; i<list.size();i++){
+                addToTable(list.get(i));
+            }
         }
+            // for (String[] i : list){
+            //     System.out.println("Shit the bed");
+            //     addToTable(i);
+            // }
     }
-    private void addToTable(String v){//Put variable you want to add in the () if you wanna use this
+    private void addToTable(String[] v){//Put variable you want to add in the () if you wanna use this
         //String name= v.getName();
-        //String[] item={name,""+ v.getQuantity()};
-        String[] item={v};
-        model.addRow(item);
+        //String[] item={name,""+ v.getQuantity()}; 
+        model.addRow(v);
     }
     private class CloseButtonListener implements ActionListener
     {
@@ -1997,6 +2021,7 @@ public class UI {
         {
             playSound(buttonPressSound);
             createVenueDisplay.setVisible(false);
+            viewListDisplay.dispose();
             createReservationDisplay.setVisible(false);
             createClientDisplay.setVisible(false);
             createInventoryItemDisplay.setVisible(false);

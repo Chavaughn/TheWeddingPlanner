@@ -1,6 +1,10 @@
 package app.manage;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import app.util.Spreadsheet;
 
 public class VenueManagement {
@@ -12,7 +16,12 @@ public class VenueManagement {
         return this.venue;
     }
 
-    public ArrayList<String> viewAllVenues(){
+    public ArrayList<String[]> viewAllVenues(){
+        try {
+            spreadsheet = new Spreadsheet();
+        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            e.printStackTrace();
+        }
         return spreadsheet.readSheet("Venue");
     }
 
