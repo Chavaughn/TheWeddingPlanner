@@ -22,6 +22,7 @@ import net.sourceforge.jdatepicker.util.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.DefaultTableModel;
 
+import app.manage.ClientManagement;
 import app.manage.Venue;
 
 import javax.sound.sampled.AudioInputStream;
@@ -53,6 +54,7 @@ public class UI {
     private JFrame viewListDisplay = new JFrame();
     private JComboBox   dropDownBoxMenu;
     private JComboBox   dropDownBoxVType;
+    private DefaultTableModel model;
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
 
@@ -136,6 +138,10 @@ public class UI {
     public int setType(int i){
         type = i;
         return type;
+    }
+    public DefaultTableModel setModel(String[] columnNam){
+        model=new DefaultTableModel(columnNam,0);
+        return model;
     }
     /* ------------------------------------ ENTRY SCREEN -------------------------------------*/
     private void StartLogin(){
@@ -1885,66 +1891,48 @@ public class UI {
         JPanel      pnlDisplay;
         JScrollPane scrollPane;
         JTable      table;
-        DefaultTableModel model;
+        //DefaultTableModel model;
+        ArrayList<String> clientList;
+        //String[]    columnNames;
 
         pnlCommand = new JPanel();
         pnlDisplay = new JPanel();
         viewListDisplay.setLayout(new GridLayout(2,1));
         pnlCommand.setBackground(new Color(239,255,239));
-        
+        /*
         if(type == 1){//Client view
-            String[] columnNames =  {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"};
-            model=new DefaultTableModel(columnNames,0);
-            table = new JTable(model);
-            table.setBackground(new Color(239,255,239));
-        
-        
-            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
-            table.setFillsViewportHeight(true);
-    
-            scrollPane = new JScrollPane(table);
-            viewListDisplay.add(scrollPane);
+            String[] columnName =  {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"};
+            columnNames = columnName;
         }
         else if(type == 2){//Reservation view
-            String[] columnNames =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
-            model=new DefaultTableModel(columnNames,0);
-            table = new JTable(model);
-            table.setBackground(new Color(239,255,239));
-        
-        
-            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
-            table.setFillsViewportHeight(true);
-    
-            scrollPane = new JScrollPane(table);
-            viewListDisplay.add(scrollPane);
+            String[] columnName =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
+            columnNames = columnName;
         }
         else if(type == 3){//Venue view
-            String[] columnNames =  {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"};
-            model=new DefaultTableModel(columnNames,0);
-            table = new JTable(model);
-            table.setBackground(new Color(239,255,239));
-        
-        
-            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
-            table.setFillsViewportHeight(true);
-    
-            scrollPane = new JScrollPane(table);
-            viewListDisplay.add(scrollPane);
+            String[] columnName =  {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"};
+            columnNames = columnName;
         }
         else if(type == 4){//Inventory view
-            String[] columnNames =  {"Name", "Quantity"};
-            model=new DefaultTableModel(columnNames,0);
-            table = new JTable(model);
-            table.setBackground(new Color(239,255,239));
-        
-        
-            table.setPreferredScrollableViewportSize(new Dimension(500, 500));
-            table.setFillsViewportHeight(true);
+
+        }*/
+        String[] columnNames =  {"Name", "Quantity"};
+        //columnNames = columnName;
+        ClientManagement clientMang = new ClientManagement();
+        //System.out.println(clientMang.viewAllClients());
+        clientList = clientMang.viewAllClients();
+        showTable(clientList);
+
+        setModel(columnNames);
+        table = new JTable(model);
+        table.setBackground(new Color(239,255,239));
     
-            scrollPane = new JScrollPane(table);
-            viewListDisplay.add(scrollPane);
-        }
-        //showTable();
+    
+        table.setPreferredScrollableViewportSize(new Dimension(500, 500));
+        table.setFillsViewportHeight(true);
+
+        scrollPane = new JScrollPane(table);
+        viewListDisplay.add(scrollPane);
+
 
 
        //Create icons for buttons
@@ -1983,24 +1971,25 @@ public class UI {
        
 
         viewListDisplay.add(pnlCommand);
-        viewListDisplay.pack();
-        viewListDisplay.setResizable(false);
-        viewListDisplay.setLocationRelativeTo(null);
-        viewListDisplay.setVisible(true);
+        packFrameLogin(viewListDisplay);
     }
 
 
-    private void showTable()//Put the list of things you want in the table between the () if you wanna use this
+    private void showTable(ArrayList<String> list)//Put the list of things you want in the table between the () if you wanna use this
     {
-       /*if (list.size()>0)
+        System.out.println("Happened");
+       if (list.size()>0)
+        System.out.println("if worked");
         for (String i : list){
+            System.out.println(i);
             addToTable(i);
-        }How it'd be done ^*/
+        }
     }
-    private void addToTable(){//Put variable you want to add in the () if you wanna use this
-        //String name= variable.getName();
-        //String[] item={name,""+ variable.getQuantity()};
-        //model.addRow(item);
+    private void addToTable(String v){//Put variable you want to add in the () if you wanna use this
+        //String name= v.getName();
+        //String[] item={name,""+ v.getQuantity()};
+        String[] item={v};
+        model.addRow(item);
     }
     private class CloseButtonListener implements ActionListener
     {
