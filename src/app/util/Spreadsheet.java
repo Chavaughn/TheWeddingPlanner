@@ -33,6 +33,7 @@ import app.manage.Venue;
 
 public class Spreadsheet {
 
+<<<<<<< Updated upstream
     private File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
     private FileInputStream fis = new FileInputStream(file);
     private XSSFWorkbook workbook = new XSSFWorkbook();
@@ -42,6 +43,17 @@ public class Spreadsheet {
     private XSSFSheet clientSheet = workbook.createSheet("Client");
     private XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
     private XSSFSheet itemSheet = workbook.createSheet("Items");
+=======
+    File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+    FileInputStream fis = new FileInputStream(file);
+    static XSSFWorkbook workbook = new XSSFWorkbook();
+    XSSFSheet userSheet = workbook.createSheet("User");
+    XSSFSheet venueSheet = workbook.createSheet("Venue");
+    XSSFSheet inventorySheet = workbook.createSheet("Reservation");
+    XSSFSheet clientSheet = workbook.createSheet("Client");
+    XSSFSheet reservsationSheet = workbook.createSheet("Inventory");
+    XSSFSheet itemSheet = workbook.createSheet("Items");
+>>>>>>> Stashed changes
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
@@ -251,9 +263,44 @@ public class Spreadsheet {
             return false;
 
     }
+<<<<<<< Updated upstream
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException 
     {
         new Spreadsheet();
+=======
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException {
+        try {
+            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+            
+            if(!daf.exists() ) {
+                daf.createNewFile();
+             }
+           
+        }catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();}
+
+        Spreadsheet spreadsheet = new Spreadsheet();
+
+        // User user = new User("Richard", "12","pass",2);
+        // writeUserSheet(user);
+        // user = new User("Simon", "13","pass",1);
+        // writeUserSheet(user);
+
+        // int[] intArray = new int[]{2021,2,27}; 
+        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        // writeVenueSheet(venue);
+
+        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        // writeClientSheet(client);
+    
+        // System.out.println(readUserSheet());
+        // System.out.println(readVenueSheet());
+        // System.out.println(readClientSheet());
+
+
+       
+>>>>>>> Stashed changes
     }
 }
 
