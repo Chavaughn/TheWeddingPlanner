@@ -53,9 +53,9 @@ public class Spreadsheet {
         
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
         data.put("1", new Object[] {"ID", "NAME", "AccessLevel"});
-        data.put("2", new Object[] {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"});
-        data.put("3", new Object[] {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"});
-        data.put("4", new Object[] {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"});
+        data.put("2", new Object[] {"VID", "Venue Name", "Date", "Venue Type", "Location", "Estimated Items Needed"});
+        data.put("3", new Object[] {"RID", "Wedding Date", "Reservsation Date", "Approximate Price"});
+        data.put("4", new Object[] {"CID", "Name", "Date of Birth", "Email", "Phone Numbers"});
         data.put("5", new Object[] {"Chairs"});
         data.put("6", new Object[] {"Name", "Quantity"});
         Set<String> keyset = data.keySet();
@@ -108,7 +108,7 @@ public class Spreadsheet {
         {
             e.printStackTrace();
         }
-
+        System.out.println(getLastId()+1);
         // User user = new User("Richard", "12","pass",2);
         // writeUserSheet(user);
         // user = new User("Simon", "13","pass",1);
@@ -128,7 +128,7 @@ public class Spreadsheet {
         int rowCount = workbook.getSheet("User").getLastRowNum();
         Row row =  workbook.getSheet("User").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(user.getUseriD());
+        cell.setCellValue(user.getUseriD()+"");
 
         cell = row.createCell(1);
         cell.setCellValue(user.getUserName());
@@ -151,13 +151,16 @@ public class Spreadsheet {
         int rowCount = workbook.getSheet("Venue").getLastRowNum();
         Row row =  workbook.getSheet("Venue").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(venue.getVenueName());
+        cell.setCellValue(venue.getVenueId()+"");
 
         cell = row.createCell(1);
-        cell.setCellValue(venue.getVenueId());
+        cell.setCellValue(venue.getVenueName());
 
         cell = row.createCell(2);
         cell.setCellValue(venue.getDate().toString());
+        
+        cell = row.createCell(3);
+        cell.setCellValue(venue.getVenueType());
 
         cell = row.createCell(4);
         cell.setCellValue(venue.getLocation());
@@ -177,13 +180,13 @@ public class Spreadsheet {
         int rowCount = workbook.getSheet("Client").getLastRowNum();
         Row row =  workbook.getSheet("Client").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(client.getClientName());
+        cell.setCellValue(client.getClientId()+"");
 
         cell = row.createCell(1);
-        cell.setCellValue(client.getDateOfBirth().toString());
-
+        cell.setCellValue(client.getClientName());
+        
         cell = row.createCell(2);
-        cell.setCellValue(client.getAge());
+        cell.setCellValue(client.getDateOfBirth().toString());
 
         cell = row.createCell(3);
         cell.setCellValue(client.getEmail());
@@ -229,6 +232,14 @@ public class Spreadsheet {
                
             }
         return vallist;
+    }
+
+    public int getLastId(){
+        if (workbook.getSheet("Client").getRow(workbook.getSheet("Client").getFirstRowNum()+1) == null){
+            return 0;
+
+        }
+            return (int) Double.parseDouble(workbook.getSheet("Client").getRow(workbook.getSheet("Client").getLastRowNum()).getCell(0).getStringCellValue());
     }
 
 

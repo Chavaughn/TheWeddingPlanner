@@ -73,7 +73,8 @@ public class UI {
     private final String deleteIcon = "src/res/icons/deleteIcon.png";
     private final String viewPastIcon = "src/res/icons/viewpasticon.png";
     
-
+    private VenueManagement venMan = new VenueManagement();
+    private ClientManagement clientMan = new ClientManagement();
 
     /**Souynd Constants */
     private final String startSound = "src/res/sound/start2.wav";
@@ -1398,7 +1399,7 @@ public class UI {
         //Create JDatepicker/Calendar
         UtilDateModel model = new UtilDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
         //Align text to center
         title.setHorizontalAlignment(JLabel.RIGHT);
@@ -1491,13 +1492,16 @@ public class UI {
         pnlDisplay.add(datePicker);
 
         //Add Estimated Price field
-        pnlDisplay.add(new JLabel("Enter Venue Location")).setForeground(Color.white);
-        txtLocation = new JTextField(30); 
-        txtLocation.setHorizontalAlignment(JTextField.CENTER);
-        pnlDisplay.add(txtLocation);
+        // pnlDisplay.add(new JLabel("Enter Venue Location")).setForeground(Color.white);
+        // txtLocation = new JTextField(30); 
+        // txtLocation.setHorizontalAlignment(JTextField.CENTER);
+        // pnlDisplay.add(txtLocation);
+
+        
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new createVenueButtonListener());
+        //TODO Add error handling for the if cells empty
+        cmdSelect.addActionListener(e -> {venMan.createVenue(txtName.getText(), dropDownBox1.getSelectedItem().toString(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},dropDownBox2.getSelectedItem().toString()); createVenueDisplay.dispose();});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -1505,6 +1509,27 @@ public class UI {
         createVenueDisplay.add(pnlDisplay, BorderLayout.CENTER);
         createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(createVenueDisplay);
+    }
+    public class DateLabelFormatter extends AbstractFormatter {
+
+        private String datePattern = "yyyy-MM-dd";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+    
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+    
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+    
+            return "";
+        }
+    
     }
 
     //Gets the selected data from Drop Down Menu
@@ -1884,7 +1909,7 @@ public class UI {
         pnlDisplay.add(txtPhoneNum);
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new createVenueButtonListener());
+        cmdSelect.addActionListener(e -> {clientMan.addClient(txtName.getText(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},txtEmail.getText() ,txtPhoneNum.getText());createClientDisplay.dispose(); } );
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -1917,7 +1942,7 @@ public class UI {
         pnlCommand.setBackground(new Color(239,255,239));
        
         if(type == 1){//Client view
-            String[] columnName =  {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"};
+            String[] columnName =  {"ClientID", "Name", "Date of Birth", "Email", "Phone Numbers"};
             ClientManagement clientMang = new ClientManagement();
             clientList = clientMang.viewAllClients();
             columnNames = columnName;
@@ -1929,7 +1954,7 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
-            String[] columnName =  {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"};
+            String[] columnName =  {"VenueID ","Venue Name",  "Date", "Venue Type", "Location", "Estimated Items Needed"};
             VenueManagement ven = new VenueManagement();
             clientList = ven.viewAllVenues();
             columnNames = columnName;
@@ -1960,28 +1985,24 @@ public class UI {
 
        //Create icons for buttons
        //Icon sortbudgeticon = new ImageIcon("icons/sorticon.png");
-       Icon exiticon = new ImageIcon("icons/exiticon.png");
+       Icon exiticon = new ImageIcon("src/res/icons/exiticon.png");
        //Icon sortnameicon = new ImageIcon("icons/sorticon.png");
-       Icon saveicon = new ImageIcon("icons/saveicon.png");
 
 
         //Create Buttons
         //cmdSortBudget  = new JButton("Sort by Budget", sortbudgeticon);
         cmdClose   = new JButton("Close", exiticon);
         //cmdSortName = new JButton("Sort by Name", sortnameicon);
-        cmdSave = new JButton("Save Changes", saveicon);
 
 
         //Set Background Colours
         //cmdSortBudget.setBackground(new Color(238,232,170));
         cmdClose.setBackground(new Color(238,232,170));
-        cmdSave.setBackground(new Color(238,232,170));
         //cmdSortName.setBackground(new Color(238,232,170));
 
 
         //Add ActionListeners to Buttons
         cmdClose.addActionListener(new CloseButtonListener());
-        cmdSave.addActionListener(new CloseButtonListener()); //Save not implemented
         //cmdSortBudget.addActionListener(new SortBudgetButtonListener());
         //cmdSortName.addActionListener(new SortNameButtonListener());
         
@@ -1990,7 +2011,6 @@ public class UI {
         //pnlCommand.add(cmdSortBudget);
         //pnlCommand.add(cmdSortName);
         pnlCommand.add(cmdClose);
-        pnlCommand.add(cmdSave);
        
 
         viewListDisplay.add(pnlCommand);

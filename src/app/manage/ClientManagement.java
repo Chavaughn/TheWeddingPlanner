@@ -10,8 +10,15 @@ import app.util.Spreadsheet;
 public class ClientManagement {
     private Spreadsheet spreadsheet;
 
-    public Client addClient(String name, int[] dOB, int age, String email, String phoneNumber){
-        return new Client(name, dOB, age, email, phoneNumber);
+    public Client addClient(String name, int[] dOB, String email, String phoneNumber){
+        Client client = new Client(name, dOB, email, phoneNumber);
+        try {
+            spreadsheet = new Spreadsheet();
+            spreadsheet.writeClientSheet(client);
+        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            e.printStackTrace();
+        }
+        return client;
     }
     
     public ArrayList<String[]> viewAllClients(){
