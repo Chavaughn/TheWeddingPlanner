@@ -13,21 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-// import org.apache.poi.hssf.usermodel.HSSFCell;
-// import org.apache.poi.hssf.usermodel.HSSFRow;
-// import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-// import org.apache.poi.sl.usermodel.Sheet;
-// import org.apache.poi.ss.usermodel.Cell;
-// import org.apache.poi.ss.usermodel.CellStyle;
-// import org.apache.poi.ss.usermodel.Row;
-// // import org.apache.poi.ss.usermodel.Workbook;
-// import org.apache.poi.xssf.usermodel.XSSFCell;
-// import org.apache.poi.xssf.usermodel.XSSFRow;
-// import org.apache.poi.xssf.usermodel.XSSFSheet;
-// import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-// import com.spire.xls.ExcelVersion;
-// import com.spire.xls.Workbook;
-// import com.spire.xls.Worksheet;
+
 import com.aspose.cells.*;
 
 
@@ -62,12 +48,12 @@ public class Test  {
             workbook = new Workbook(fis);
         }
 
-        // GridWorksheet workSheet = GridWeb1.WorkSheets[GridWeb1.ActiveSheetIndex];
+        
       
         
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
         data.put("1", new Object[] {"ID", "NAME", "AccessLevel"});
-        data.put("2", new Object[] {"VID", "Venue Name", "Date", "Venue Type", "Location", "Estimated Items Needed"});
+        data.put("2", new Object[] {"VID", "Venue Name", "Date", "Venue Type", "Location"});
         data.put("3", new Object[] {"RID", "Wedding Date", "Reservsation Date", "Approximate Price"});
         data.put("4", new Object[] {"CID", "Name", "Date of Birth", "Email", "Phone Numbers"});
         data.put("5", new Object[] {"Chairs"});
@@ -135,20 +121,20 @@ public class Test  {
 	}
 
     public void writeUserSheet(User user) throws Exception ,FileNotFoundException{
-        int rowCount =  worksheets.get("User").getCells().getMaxDataRow();
+        Worksheet sheet = worksheets.get("User");
+        int rowCount =  sheet.getCells().getMaxDataRow();
 
-        Cell cell = worksheets.get("User").getCells().get(rowCount+1, 0);
+        Cell cell = sheet.getCells().get(rowCount+1, 0);
         cell.setValue(user.getUseriD()+"");
 
-        cell = worksheets.get("User").getCells().get(rowCount+1, 1);
+        cell = sheet.getCells().get(rowCount+1, 1);
         cell.setValue(user.getUserName());
 
-        cell = worksheets.get("User").getCells().get(rowCount+1, 2);
+        cell = sheet.getCells().get(rowCount+1, 2);
         cell.setValue(user.getAuthLevel());
 
         try
         {
-        
             workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
         }
         catch (Exception e) 
@@ -158,41 +144,88 @@ public class Test  {
 
     }
 
-    public String readSheet(String sheetName){
+    public void writeVenueSheet(Venue venue) throws Exception ,FileNotFoundException{
+        Worksheet sheet = worksheets.get("Venue");
+        int rowCount = sheet.getCells().getMaxDataRow();
 
-        StringBuilder stringBuilder = new StringBuilder();
+        Cell cell = sheet.getCells().get(rowCount+1, 0);
+        cell.setValue(venue.getVenueId()+"");
+
+        cell = sheet.getCells().get(rowCount+1, 1);
+        cell.setValue(venue.getVenueName());
+
+        cell = sheet.getCells().get(rowCount+1, 2);
+        cell.setValue(venue.getDate().toString());
+
+        cell = sheet.getCells().get(rowCount+1, 3);
+        cell.setValue(venue.getVenueType());
+
+        cell = sheet.getCells().get(rowCount+1, 4);
+        cell.setValue(venue.getLocation());
+
+        try
+        {
+            workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void writeClientSheet(Client client) throws Exception ,FileNotFoundException{
+        Worksheet sheet = worksheets.get("Client");
+        int rowCount = sheet.getCells().getMaxDataRow();
+
+        Cell cell = sheet.getCells().get(rowCount+1, 0);
+        cell.setValue(client.getClientId()+"");
+
+        cell = sheet.getCells().get(rowCount+1, 1);
+        cell.setValue(client.getClientName());
+
+        cell = sheet.getCells().get(rowCount+1, 2);
+        cell.setValue(client.getDateOfBirth().toString());
+
+        cell = sheet.getCells().get(rowCount+1, 3);
+        cell.setValue(client.getEmail());
+
+        cell = sheet.getCells().get(rowCount+1, 4);
+        cell.setValue(client.getPhoneNumber());
+
+        try
+        {
+            workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<String[]> readSheet(String sheetName){
+
+        
         Worksheet sheet = worksheets.get(sheetName);
         
 
         ArrayList<String> cellval = new ArrayList<>() ;
-        ArrayList<String> vallist = new ArrayList<String>() ;
+        ArrayList<String[]> vallist = new ArrayList<String[]>() ;
         
-        Iterator rowIter = sheet.getCells().getRows().iterator();
+        
 
 
         for (int i = 0; i < sheet.getCells().getRows().getCount(); i++){
             for(int x = 0; x < sheet.getCells().getMaxDataColumn()+1; x++){
                 cellval.add(sheet.getCells().get(i,x).getStringValue());
             }
-            vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+            vallist.add(cellval.toArray(new String[0]));
             cellval.clear();
         }
       
-
-        // while (rowIter.hasNext()) {
-        //     Row myRow = (Row) rowIter.next();
-        //     Iterator cellIter = myRow.iterator();
-        //     while (cellIter.hasNext()) {
-        //         Cell cell = (Cell) cellIter.next();
-        //         cellval.add(cell.getStringValue());
-                
-        //     }
-
-        // }
-        // vallist.add(Arrays.toString(cellval.toArray(new String[0])));
-        // cellval.clear();
         System.out.println(vallist);
-        return worksheets.get(sheetName).getCells().getRows().spliterator().toString();
+        return vallist;
     }
     
 
