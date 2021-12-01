@@ -1781,9 +1781,7 @@ public class UI {
         txtQuantity.setHorizontalAlignment(JTextField.CENTER);
         pnlDisplay.add(txtQuantity);
 
-        //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new createVenueButtonListener());
-        cmdClose.addActionListener(new CloseButtonListener());
+       
         
         //Add Item selection instructions text to panel
         instructions = new JLabel("Please Select Item Type");
@@ -1792,10 +1790,15 @@ public class UI {
 
         //Create drop down box
         final JComboBox dropDownBox =new JComboBox(Item.ITEM_TYPES);
-        dropDownBoxIType = dropDownBox;
+        dropDownBoxVType = dropDownBox;
         pnlDisplay.add(dropDownBox);
         dropDownBox.setBounds(50, 100,90,20);
-
+        
+         //Give Buttons ActionListeners
+        //cmdSelect.addActionListener(new createVenueButtonListener());
+        //cmdSelect.addActionListener(e -> {venMan.createVenue(txtName.getText(), dropDownBox1.getSelectedItem().toString(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},dropDownBox2.getSelectedItem().toString()); createVenueDisplay.dispose();});
+        cmdSelect.addActionListener(e -> {itemMan.createItem(txtName.getText(), Integer.parseInt(txtQuantity.getText()), dropDownBox.getSelectedItem().toString()); createInventoryItemDisplay.dispose();});
+        cmdClose.addActionListener(new CloseButtonListener());
 
 
         //Add Panels to frame
@@ -1979,9 +1982,9 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 4){//Inventory view
-            String[] columnName = {"Item Name", "Quantity"};
+            String[] columnName = {"Item Name", "Quantity","Item Type"}; //itemType was not added as a column
             Inventory itm = new Inventory();
-            //clientList = itm.viewAllItems();
+            clientList = itm.viewAllItems();
             columnNames = columnName;
 
         }
