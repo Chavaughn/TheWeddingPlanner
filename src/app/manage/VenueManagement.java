@@ -7,34 +7,35 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import app.util.Spreadsheet;
 
-public class ClientManagement {
+public class VenueManagement {
+    private Venue venue;
     private Spreadsheet spreadsheet;
 
-    public Client addClient(String name, int[] dOB, String email, String phoneNumber){
-        Client client = new Client(name, dOB, email, phoneNumber);
+    public Venue createVenue(String name, String Location,int[] date, String venType){
+        venue = new Venue(name, date, venType,Location);
         try {
             spreadsheet = new Spreadsheet();
-            spreadsheet.writeClientSheet(client);
+            spreadsheet.writeVenueSheet(venue);
         } catch (InvalidFormatException | IOException| NullPointerException e) {
             e.printStackTrace();
         }
-        return client;
+        return this.venue;
     }
-    
-    public ArrayList<String[]> viewAllClients(){
+
+    public ArrayList<String[]> viewAllVenues(){
         try {
             spreadsheet = new Spreadsheet();
         } catch (InvalidFormatException | IOException| NullPointerException e) {
             e.printStackTrace();
         }
-        return spreadsheet.readSheet("Client");
+        return spreadsheet.readSheet("Venue");
     }
 
-    public void editClient(String clientId){
+    public void editVenue(String venueId){
 
     }
 
-    public void removeClient(String clientId){
+    public void removeVenue(String venueId){
 
     }
 }

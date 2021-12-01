@@ -16,17 +16,16 @@
             "src/res/jar imports/poi-5.0.0/lib/commons-collections4-4.4.jar",
             "src/res/jar imports/poi-5.0.0/lib/commons-math3-3.6.1.jar",
             "src/res/jar imports/poi-5.0.0/lib/SparseBitSet-1.2.jar",
+<<<<<<< HEAD
             "src/res/jar imports/poi-5.0.0/ooxml-lib/poi-ooxml-schemas-4.1.2.jar",
             "src/res/jar imports/Spire.Xls.jar",
             "src/res/jar imports/aspose-cells-21.11.jar",
             "src/res/jar imports/aspose-cells-21.11-gridweb.jar"
+=======
+            "src/res/jar imports/jdatepicker-1.3.2.jar"
+>>>>>>> 949708dd63dc78eb9a3ae6096ad467641b20fcc3
         ],
         "exclude": [
-            "c:\\Users\\flash\\Downloads\\poi-bin-5.0.0-20210120 (1)\\poi-5.0.0\\lib\\SparseBitSet-1.2.jar",
-            "c:\\Users\\flash\\Downloads\\poi-bin-5.0.0-20210120 (1)\\poi-5.0.0\\lib\\commons-codec-1.15.jar",
-            "c:\\Users\\flash\\Downloads\\poi-bin-5.0.0-20210120 (1)\\poi-5.0.0\\poi-ooxml-lite-5.0.0.jar",
-            "c:\\Users\\flash\\Downloads\\poi-bin-5.0.0-20210120 (1)\\poi-5.0.0\\poi-5.0.0.jar",
-            "c:\\Users\\flash\\Downloads\\poi-bin-5.0.0-20210120 (1)\\poi-5.0.0\\lib\\commons-collections4-4.4.jar"
         ]
     }
 }

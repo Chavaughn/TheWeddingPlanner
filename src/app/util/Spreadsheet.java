@@ -33,27 +33,29 @@ import app.manage.Venue;
 
 public class Spreadsheet {
 
-    File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-    FileInputStream fis = new FileInputStream(file);
-    static XSSFWorkbook workbook = new XSSFWorkbook();
-    XSSFSheet userSheet = workbook.createSheet("User");
-    XSSFSheet venueSheet = workbook.createSheet("Venue");
-    XSSFSheet inventorySheet = workbook.createSheet("Inventory");
-    XSSFSheet clientSheet = workbook.createSheet("Client");
-    XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
-    XSSFSheet itemSheet = workbook.createSheet("Items");
+    private File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
+    private FileInputStream fis = new FileInputStream(file);
+    private XSSFWorkbook workbook = new XSSFWorkbook();
+    private XSSFSheet userSheet = workbook.createSheet("User");
+    private XSSFSheet venueSheet = workbook.createSheet("Venue");
+    private XSSFSheet inventorySheet = workbook.createSheet("Inventory");
+    private XSSFSheet clientSheet = workbook.createSheet("Client");
+    private XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
+    private XSSFSheet itemSheet = workbook.createSheet("Items");
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
+       
+
         if (!filecheck()){
             workbook = new XSSFWorkbook(fis);
         }
         
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
         data.put("1", new Object[] {"ID", "NAME", "AccessLevel"});
-        data.put("2", new Object[] {"Venue Name", "VenueID ", "Date", "Venue Type", "Location", "Estimated Items Needed"});
-        data.put("3", new Object[] {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"});
-        data.put("4", new Object[] {"Name", "Date of Birth", "Age", "Email", "Phone Numbers"});
+        data.put("2", new Object[] {"VID", "Venue Name", "Date", "Venue Type", "Location", "Estimated Items Needed"});
+        data.put("3", new Object[] {"RID", "Wedding Date", "Reservsation Date", "Approximate Price"});
+        data.put("4", new Object[] {"CID", "Name", "Date of Birth", "Email", "Phone Numbers"});
         data.put("5", new Object[] {"Chairs"});
         data.put("6", new Object[] {"Name", "Quantity"});
         Set<String> keyset = data.keySet();
@@ -69,13 +71,10 @@ public class Spreadsheet {
                 
                 if (Integer.parseInt(key) == (i+1)){
                     row = currsheet.createRow(rownum);
-                    System.out.println(Integer.parseInt(key)+"  "+(i+1));
                     Object [] objArr = data.get(key);
                     int cellnum = 0;
                     for (Object obj : objArr)
                     {
-                        
-                        System.out.println((String)obj);
                         
                         Cell cell = row.createCell(cellnum++);
                         if(obj instanceof String)
@@ -109,15 +108,27 @@ public class Spreadsheet {
         {
             e.printStackTrace();
         }
+        System.out.println(getLastId()+1);
+        // User user = new User("Richard", "12","pass",2);
+        // writeUserSheet(user);
+        // user = new User("Simon", "13","pass",1);
+        // writeUserSheet(user);
+
+        // int[] intArray = new int[]{2021,2,27}; 
+        // Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
+        // writeVenueSheet(venue);
+
+        // Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
+        // writeClientSheet(client);
        
     }
 
-    public static void writeUserSheet(User user) throws FileNotFoundException, IOException{
+    public void writeUserSheet(User user) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("User").getLastRowNum();
         Row row =  workbook.getSheet("User").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(user.getUseriD());
+        cell.setCellValue(user.getUseriD()+"");
 
         cell = row.createCell(1);
         cell.setCellValue(user.getUserName());
@@ -135,18 +146,21 @@ public class Spreadsheet {
 
     }
 
-    static void writeVenueSheet(Venue venue) throws FileNotFoundException, IOException{
+    public void writeVenueSheet(Venue venue) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("Venue").getLastRowNum();
         Row row =  workbook.getSheet("Venue").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(venue.getVenueName());
+        cell.setCellValue(venue.getVenueId()+"");
 
         cell = row.createCell(1);
-        cell.setCellValue(venue.getVenueId());
+        cell.setCellValue(venue.getVenueName());
 
         cell = row.createCell(2);
-        cell.setCellValue(venue.getDate());
+        cell.setCellValue(venue.getDate().toString());
+        
+        cell = row.createCell(3);
+        cell.setCellValue(venue.getVenueType());
 
         cell = row.createCell(4);
         cell.setCellValue(venue.getLocation());
@@ -161,18 +175,18 @@ public class Spreadsheet {
 
     }
 
-    public static void writeClientSheet(Client client) throws FileNotFoundException, IOException{
+    public void writeClientSheet(Client client) throws FileNotFoundException, IOException{
 
         int rowCount = workbook.getSheet("Client").getLastRowNum();
         Row row =  workbook.getSheet("Client").createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell.setCellValue(client.getClientName());
+        cell.setCellValue(client.getClientId()+"");
 
         cell = row.createCell(1);
-        cell.setCellValue(client.getDateOfBirth());
-
+        cell.setCellValue(client.getClientName());
+        
         cell = row.createCell(2);
-        cell.setCellValue(client.getAge());
+        cell.setCellValue(client.getDateOfBirth().toString());
 
         cell = row.createCell(3);
         cell.setCellValue(client.getEmail());
@@ -191,12 +205,12 @@ public class Spreadsheet {
     }
 
 
-    public static ArrayList<String> readVenueSheet(){
-        Iterator<Row> rowIter = workbook.getSheet("Venue").iterator();
+    public ArrayList<String[]> readSheet(String sheetName){
+        Iterator<Row> rowIter = workbook.getSheet(sheetName).iterator();
 
         ArrayList<String> cellval = new ArrayList<>() ;
 
-        ArrayList<String> vallist = new ArrayList<String>() ;
+        ArrayList<String[]> vallist = new ArrayList<String[]>() ;
             while (rowIter.hasNext()) {
                 Row myRow = rowIter.next();
                 Iterator<Cell> cellIter = myRow.cellIterator();
@@ -211,76 +225,22 @@ public class Spreadsheet {
                           break;
                         default:
                         }
-                    
                 }
                
-                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
+                vallist.add(cellval.toArray(new String[0]));
                 cellval.clear();
                
             }
         return vallist;
     }
 
-    public static ArrayList<String> readUserSheet(){
-        Iterator<Row> rowIter = workbook.getSheet("User").iterator();
+    public int getLastId(){
+        if (workbook.getSheet("Client").getRow(workbook.getSheet("Client").getFirstRowNum()+1) == null){
+            return 0;
 
-        ArrayList<String> cellval = new ArrayList<>() ;
-
-        ArrayList<String> vallist = new ArrayList<String>() ;
-            while (rowIter.hasNext()) {
-                Row myRow = rowIter.next();
-                Iterator<Cell> cellIter = myRow.cellIterator();
-                while (cellIter.hasNext()) {
-                    Cell myCell = cellIter.next();
-                    switch (myCell.getCellType()) {
-                        case STRING:
-                          cellval.add(myCell.getStringCellValue());
-                          break;
-                        case NUMERIC:
-                          cellval.add(""+myCell.getNumericCellValue());
-                          break;
-                        default:
-                        }
-                    
-                }
-               
-                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
-                cellval.clear();
-               
-            }
-        return vallist;
+        }
+            return (int) Double.parseDouble(workbook.getSheet("Client").getRow(workbook.getSheet("Client").getLastRowNum()).getCell(0).getStringCellValue());
     }
-
-    public static ArrayList<String> readClientSheet(){
-        Iterator<Row> rowIter = workbook.getSheet("Client").iterator();
-
-        ArrayList<String> cellval = new ArrayList<>() ;
-
-        ArrayList<String> vallist = new ArrayList<String>() ;
-            while (rowIter.hasNext()) {
-                Row myRow = rowIter.next();
-                Iterator<Cell> cellIter = myRow.cellIterator();
-                while (cellIter.hasNext()) {
-                    Cell myCell = cellIter.next();
-                    switch (myCell.getCellType()) {
-                        case STRING:
-                          cellval.add(myCell.getStringCellValue());
-                          break;
-                        case NUMERIC:
-                          cellval.add(""+myCell.getNumericCellValue());
-                          break;
-                        default:
-                        }
-                    
-                }
-               
-                vallist.add(Arrays.toString(cellval.toArray(new String[0])));
-                cellval.clear();
-               
-            }
-        return vallist;
-    }
-
 
 
     private boolean filecheck(){
@@ -291,38 +251,9 @@ public class Spreadsheet {
             return false;
 
     }
-    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException {
-        try {
-            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-            
-            if(!daf.exists() ) {
-                daf.createNewFile();
-             }
-           
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();}
-
-        Spreadsheet spreadsheet = new Spreadsheet();
-
-        User user = new User("Richard", "12","pass",2);
-        writeUserSheet(user);
-        user = new User("Simon", "13","pass",1);
-        writeUserSheet(user);
-
-        int[] intArray = new int[]{2021,2,27}; 
-        Venue venue = new Venue("Long Mountain", "25",intArray,"Kingston");
-        writeVenueSheet(venue);
-
-        Client client =  new Client("Roger", intArray, 19, "roger@gmail.com", "1235555555");
-        writeClientSheet(client);
-    
-        System.out.println(readUserSheet());
-        System.out.println(readVenueSheet());
-        System.out.println(readClientSheet());
-
-
-       
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NumberFormatException, InvalidFormatException, IOException 
+    {
+        new Spreadsheet();
     }
 }
 
