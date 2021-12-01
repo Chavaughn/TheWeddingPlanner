@@ -26,6 +26,9 @@ import app.manage.ClientManagement;
 import app.manage.Reservation;
 import app.manage.Venue;
 import app.manage.VenueManagement;
+import app.manage.Item;
+import app.manage.Inventory;
+
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
@@ -56,6 +59,7 @@ public class UI {
     private JFrame viewListDisplay = new JFrame();
     private JComboBox   dropDownBoxMenu;
     private JComboBox   dropDownBoxVType;
+    private JComboBox   dropDownBoxIType;
     private DefaultTableModel model;
     private int top = 1, left = 1, bottom = 1, right = 1;
     private Insets i = new Insets(top, left, bottom, right);
@@ -75,6 +79,7 @@ public class UI {
     
     private VenueManagement venMan = new VenueManagement();
     private ClientManagement clientMan = new ClientManagement();
+    private Inventory itemMan = new Inventory();
 
     /**Souynd Constants */
     private final String startSound = "src/res/sound/start2.wav";
@@ -1684,6 +1689,7 @@ public class UI {
         JTextField  txtQuantity;
         JButton     cmdSelect;
         JButton     cmdClose;
+        JLabel      instructions;
         JPanel      pnlCommand = new JPanel();
         JPanel      pnlDisplay = new JPanel();
         JPanel      titlePanel = new JPanel();
@@ -1775,9 +1781,25 @@ public class UI {
         txtQuantity.setHorizontalAlignment(JTextField.CENTER);
         pnlDisplay.add(txtQuantity);
 
-        //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new createVenueButtonListener());
+       
+        
+        //Add Item selection instructions text to panel
+        instructions = new JLabel("Please Select Item Type");
+        instructions.setForeground(Color.WHITE);
+        pnlDisplay.add(instructions);
+
+        //Create drop down box
+        final JComboBox dropDownBox =new JComboBox(Item.ITEM_TYPES);
+        dropDownBoxVType = dropDownBox;
+        pnlDisplay.add(dropDownBox);
+        dropDownBox.setBounds(50, 100,90,20);
+        
+         //Give Buttons ActionListeners
+        //cmdSelect.addActionListener(new createVenueButtonListener());
+        //cmdSelect.addActionListener(e -> {venMan.createVenue(txtName.getText(), dropDownBox1.getSelectedItem().toString(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},dropDownBox2.getSelectedItem().toString()); createVenueDisplay.dispose();});
+        cmdSelect.addActionListener(e -> {itemMan.createItem(txtName.getText(), Integer.parseInt(txtQuantity.getText()), dropDownBox.getSelectedItem().toString()); createInventoryItemDisplay.dispose();});
         cmdClose.addActionListener(new CloseButtonListener());
+
 
         //Add Panels to frame
         createInventoryItemDisplay.add(titlePanel, BorderLayout.NORTH);
@@ -1939,7 +1961,7 @@ public class UI {
         pnlCommand = new JPanel();
         pnlDisplay = new JPanel();
         viewListDisplay.setLayout(new GridLayout(2,1));
-        pnlCommand.setBackground(new Color(239,255,239));
+        pnlCommand.setBackground(new Color(255, 176, 178));
        
         if(type == 1){//Client view
             String[] columnName =  {"ClientID", "Name", "Date of Birth", "Email", "Phone Numbers"};
@@ -1960,6 +1982,11 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 4){//Inventory view
+            String[] columnName = {"Item Name", "Quantity","Item Type"}; //itemType was not added as a column
+            Inventory itm = new Inventory();
+            clientList = itm.viewAllItems();
+            columnNames = columnName;
+
         }
 
         
@@ -1972,7 +1999,7 @@ public class UI {
         showTable(clientList);
 
         setModel(columnNames);
-        table.setBackground(new Color(239,255,239));
+        table.setBackground(new Color(255, 176, 178));
     
     
         table.setPreferredScrollableViewportSize(new Dimension(500, clientList.size()*15+50));
