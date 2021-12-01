@@ -1958,7 +1958,7 @@ public class UI {
         pnlCommand = new JPanel();
         pnlDisplay = new JPanel();
         viewListDisplay.setLayout(new GridLayout(2,1));
-        pnlCommand.setBackground(new Color(239,255,239));
+        pnlCommand.setBackground(new Color(255, 176, 178));
        
         if(type == 1){//Client view
             String[] columnName =  {"ClientID", "Name", "Date of Birth", "Email", "Phone Numbers"};
@@ -1981,7 +1981,7 @@ public class UI {
         else if(type == 4){//Inventory view
             String[] columnName = {"Item Name", "Quantity"};
             Inventory itm = new Inventory();
-            clientList = itm.viewAllItems();
+            //clientList = itm.viewAllItems();
             columnNames = columnName;
 
         }
@@ -1996,7 +1996,7 @@ public class UI {
         showTable(clientList);
 
         setModel(columnNames);
-        table.setBackground(new Color(239,255,239));
+        table.setBackground(new Color(255, 176, 178));
     
     
         table.setPreferredScrollableViewportSize(new Dimension(500, clientList.size()*15+50));
