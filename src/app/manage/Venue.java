@@ -1,12 +1,9 @@
 package app.manage;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import app.util.Spreadsheet;
 
@@ -32,7 +29,7 @@ public class Venue extends Client{
     public Venue(String venueName, int[] date, String venType,String location){
         try {
             sp = new Spreadsheet();
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         this.venueID = sp.getLastId()+1;

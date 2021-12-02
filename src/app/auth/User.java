@@ -1,14 +1,11 @@
 package app.auth;
 
-import java.io.UnsupportedEncodingException;
-
 public class User {
     private String name;
     private String iD;
     protected String password;
     private String authlevel;
 
-    //TODO consider the validity of making this an enum of 3 levels
     public enum hierarchy{
         unset("unset"),
         low("low"),

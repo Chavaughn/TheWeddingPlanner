@@ -6,6 +6,10 @@ public class Login{
 
 
     public Login(String iD, String password){
-        
+        this.iD = iD;
+    }
+
+    public String getId(){
+        return this.iD;
     }
 }

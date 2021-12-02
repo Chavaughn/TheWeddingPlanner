@@ -1,22 +1,19 @@
 package app.manage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
-import app.util.SheetDelete;
 import app.util.Spreadsheet;
 
 public class ClientManagement {
-    private Spreadsheet spreadsheet;
+    private Spreadsheet sp;
 
     public Client addClient(String name, int[] dOB, String email, String phoneNumber){
         Client client = new Client(name, dOB, email, phoneNumber);
         try {
-            spreadsheet = new Spreadsheet();
-            spreadsheet.writeClientSheet(client);
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            sp = new Spreadsheet();
+            sp.writeClientSheet(client);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return client;
@@ -24,11 +21,11 @@ public class ClientManagement {
     
     public ArrayList<String[]> viewAllClients(){
         try {
-            spreadsheet = new Spreadsheet();
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            sp = new Spreadsheet();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return spreadsheet.readSheet("Client");
+        return sp.readSheet("Client");
     }
 
     public void editClient(String clientId){
@@ -37,8 +34,8 @@ public class ClientManagement {
 
     public void removeClient(int clientId){
         try {
-            SheetDelete sd = new SheetDelete();
-            sd.delete(clientId);
+            sp = new Spreadsheet();
+            // sp.delete(clientId);
         } catch (Exception e) {
             e.printStackTrace();
         }

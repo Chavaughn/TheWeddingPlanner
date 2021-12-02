@@ -6,23 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.sl.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -36,16 +27,15 @@ public class Spreadsheet {
     private File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
     private FileInputStream fis = new FileInputStream(file);
     private XSSFWorkbook workbook = new XSSFWorkbook();
-    private XSSFSheet userSheet = workbook.createSheet("User");
-    private XSSFSheet venueSheet = workbook.createSheet("Venue");
-    private XSSFSheet inventorySheet = workbook.createSheet("Inventory");
-    private XSSFSheet clientSheet = workbook.createSheet("Client");
-    private XSSFSheet reservsationSheet = workbook.createSheet("Reservation");
-    private XSSFSheet itemSheet = workbook.createSheet("Items");
     
 
     public Spreadsheet()throws InvalidFormatException, IOException{
-       
+        workbook.createSheet("User");
+        workbook.createSheet("Venue");
+        workbook.createSheet("Reservation");
+        workbook.createSheet("Client");
+        workbook.createSheet("Inventory");
+        workbook.createSheet("Items");
 
         if (!filecheck()){
             workbook = new XSSFWorkbook(fis);
@@ -108,7 +98,6 @@ public class Spreadsheet {
         {
             e.printStackTrace();
         }
-        System.out.println(getLastId()+1);
         // User user = new User("Richard", "12","pass",2);
         // writeUserSheet(user);
         // user = new User("Simon", "13","pass",1);
@@ -256,5 +245,4 @@ public class Spreadsheet {
         new Spreadsheet();
     }
 }
-
 

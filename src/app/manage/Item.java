@@ -1,17 +1,9 @@
 package app.manage;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 import app.util.Spreadsheet;
 
 public class Item {
-
-    private Spreadsheet sp;
     private String name;
     private int quantity;
     private String itemType;
@@ -25,9 +17,10 @@ public class Item {
     /**Constructor */
     public Item( String name, int quantity, String itemType) {
         try {
-            sp = new Spreadsheet();
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
-            e.printStackTrace();}
+            new Spreadsheet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         this.name=name;
         this.quantity= quantity;

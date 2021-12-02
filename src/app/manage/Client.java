@@ -1,11 +1,9 @@
 package app.manage;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import app.util.Spreadsheet;
 
@@ -26,9 +24,10 @@ public class Client{
 
     /**Before calling this constructor make sure to check if the email they are giving is correct and validated using the isEmailValid() method */
     public Client(String name, int[] dOB, String email, String phoneNumber){
+        
         try {
             sp = new Spreadsheet();
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         this.cId = sp.getLastId() +1;

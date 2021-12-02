@@ -1,41 +1,57 @@
 package app.vis;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Arrays;
-
-import net.sourceforge.jdatepicker.impl.*;
-import net.sourceforge.jdatepicker.util.*; 
-
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.table.DefaultTableModel;
 
 import app.manage.ClientManagement;
+import app.manage.Inventory;
+import app.manage.Item;
 import app.manage.Reservation;
 import app.manage.Venue;
 import app.manage.VenueManagement;
-import app.manage.Item;
-import app.manage.Inventory;
-
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.AudioSystem;
-import java.io.File;
-import java.io.IOException;
+import app.util.Spreadsheet;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 public class UI {
     private int state;
@@ -81,7 +97,7 @@ public class UI {
     private VenueManagement venMan = new VenueManagement();
     private ClientManagement clientMan = new ClientManagement();
     private Inventory itemMan = new Inventory();
-
+    private static Spreadsheet sp;
     /**Souynd Constants */
     private final String startSound = "src/res/sound/start2.wav";
     private final String buttonPressSound = "src/res/sound/button2.wav";
@@ -273,14 +289,9 @@ public class UI {
 
     public static void main(String[] args) {
         try {
-            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-            
-            if(!daf.exists() ) {
-                daf.createNewFile();
-             }
-           
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
+            Spreadsheet spe = new Spreadsheet();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         new UI(1);
@@ -2176,7 +2187,6 @@ public class UI {
         try{
             theList.toArray(newList);
         }catch(ArrayStoreException e){
-            System.out.println("End me");
         }
         //System.out.println(Arrays.toString(newList));
         String newerList;
@@ -2187,7 +2197,7 @@ public class UI {
             //System.out.println(Arrays.toString(newList));
         }
         //Create drop down box
-        final JComboBox dropDownBox1 =new JComboBox(newList);
+        final JComboBox dropDownBox1 = new JComboBox(newList);
         //final JComboBox dropDownBox2 =new JComboBox(Venue.VENUE_TYPES);
         dropDownBoxMenu = dropDownBox1;
         //dropDownBoxVType = dropDownBox2;
@@ -2195,8 +2205,7 @@ public class UI {
         dropDownBox1.setBounds(50, 100,90,20);  
 
         //Give Buttons ActionListeners
-        //TODO Add error handling for the if cells empty
-        cmdDelete.addActionListener(e -> {clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(1)); createVenueDisplay.setVisible(false); createVenueDisplay.setVisible(true);});
+        cmdDelete.addActionListener(e -> {clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(1)); createVenueDisplay.dispose();});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -2309,7 +2318,6 @@ public class UI {
         try{
             theList.toArray(newList);
         }catch(ArrayStoreException e){
-            System.out.println("End me");
         }
         //System.out.println(Arrays.toString(newList));
         String newerList;

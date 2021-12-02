@@ -1,22 +1,19 @@
 package app.manage;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import app.util.Spreadsheet;
 
 public class VenueManagement {
     private Venue venue;
-    private Spreadsheet spreadsheet;
+    private Spreadsheet sp;
 
     public Venue createVenue(String name, String Location,int[] date, String venType){
         venue = new Venue(name, date, venType,Location);
         try {
-            spreadsheet = new Spreadsheet();
-            spreadsheet.writeVenueSheet(venue);
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            sp = new Spreadsheet();
+            sp.writeVenueSheet(venue);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return this.venue;
@@ -24,11 +21,11 @@ public class VenueManagement {
 
     public ArrayList<String[]> viewAllVenues(){
         try {
-            spreadsheet = new Spreadsheet();
-        } catch (InvalidFormatException | IOException| NullPointerException e) {
+            sp = new Spreadsheet();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return spreadsheet.readSheet("Venue");
+        return sp.readSheet("Venue");
     }
 
     public void editVenue(String venueId){
