@@ -17,19 +17,19 @@ import java.util.TreeMap;
 import com.aspose.cells.*;
 
 
+
 import app.auth.User;
 import app.manage.Client;
+import app.manage.Reservation;
 import app.manage.Venue;
 
 
 public class Test  {
 
-    private File file = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-
-    private FileInputStream fis = new FileInputStream(file);
+    
    
 
-    Workbook workbook = new Workbook(fis);
+    Workbook workbook = new Workbook();
     WorksheetCollection worksheets = workbook.getWorksheets();
 
 
@@ -39,17 +39,19 @@ public class Test  {
     private Worksheet clientSheet = worksheets.add("Client");
     private Worksheet reservsationSheet = worksheets.add("Reservation");
     private Worksheet itemSheet = worksheets.add("Items");
+
+  
+  
     
 
     public Test()throws  Exception, FileNotFoundException{
-       worksheets.get("Sheet1").setName("User");
-
-        if (!filecheck()){
-            workbook = new Workbook(fis);
-        }
-
         
-      
+        worksheets.get("Sheet1").setName("User");
+        
+        
+
+
+   
         
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
         data.put("1", new Object[] {"ID", "NAME", "AccessLevel"});
@@ -94,11 +96,9 @@ public class Test  {
             //Write the workbook in file system
             
             
-
+            workbook.getWorksheets().removeAt("Evaluation Warning");
             workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
         
-      
-            fis.close();
            
             System.out.println("The_Wedding_Planner.xlsx written successfully on disk.");
             
@@ -113,16 +113,22 @@ public class Test  {
             e.printStackTrace();
         }
 
-        User user = new User("Richard", "12","pass",2);
-        writeUserSheet(user);
-        user = new User("Simon", "13","pass",1);
-        writeUserSheet(user);
-        System.out.println(readSheet("User"));
+        // User user = new User("Richard", "1","pass",2);
+        // writeUserSheet(user);
+        // user = new User("Simon", "2","pass",1);
+        // writeUserSheet(user);
+        // int[] intArray = new int[]{2021,2,27}; 
+        // Venue venue = new Venue("Long Mountain",intArray,"Hotel","Kingston");
+        // writeVenueSheet(venue);
+        // delete(1);
+        // System.out.println(readSheet("User"));
+        // System.out.println("Value ="+worksheets.get("Inventory").getCells().get(1, 0).getStringValue()+".");
+        // System.out.println(getLastId());
 	}
 
     public void writeUserSheet(User user) throws Exception ,FileNotFoundException{
         Worksheet sheet = worksheets.get("User");
-        int rowCount =  sheet.getCells().getMaxDataRow();
+        int rowCount =  sheet.getCells().getMaxRow();
 
         Cell cell = sheet.getCells().get(rowCount+1, 0);
         cell.setValue(user.getUseriD()+"");
@@ -204,6 +210,34 @@ public class Test  {
 
     }
 
+    public void writeReservationSheet(Reservation res) throws Exception ,FileNotFoundException{
+        Worksheet sheet = worksheets.get("Reservation");
+        int rowCount = sheet.getCells().getMaxDataRow();
+
+        Cell cell = sheet.getCells().get(rowCount+1, 0);
+        cell.setValue(res.getResId()+"");
+
+        cell = sheet.getCells().get(rowCount+1, 1);
+        cell.setValue(res.getWeddingDate());
+
+        cell = sheet.getCells().get(rowCount+1, 2);
+        cell.setValue(res.getResDate());
+
+        cell = sheet.getCells().get(rowCount+1, 3);
+        cell.setValue(res.getappPrice());
+
+       
+        try
+        {
+            workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     public ArrayList<String[]> readSheet(String sheetName){
 
         
@@ -224,31 +258,43 @@ public class Test  {
             cellval.clear();
         }
       
-        System.out.println(vallist);
+        
         return vallist;
     }
     
+    public void delete(int ID){
+        Worksheet currsheet = null;
+        for(int i=0; i<workbook.getWorksheets().getCount(); i++){
+            currsheet = workbook.getWorksheets().get(i);
 
-	private boolean filecheck(){
-    
-        if (file.length() == 0)
-            return true;
-        else
-            return false;
+            for (int x = 0; x < currsheet.getCells().getRows().getCount(); x++){   
+                if (currsheet.getCells().get(x, 0).getStringValue().equals((ID+""))){
+                    currsheet.getCells().deleteRow(x);
+                }
+            }
+        }
 
+        try
+        {
+            workbook.save("src/res/sheets/The_Wedding_Planner.xlsx");
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
     }
-	public static void main(String[] args) throws  Exception, FileNotFoundException {
-		try {
-          
-            File daf = new File("src/res/sheets/The_Wedding_Planner.xlsx");
-          
-            if(!daf.exists() ) {
-                daf.createNewFile();
-             }
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();}
+    
+    public int getLastId(){
+       if (worksheets.get("Client").getCells().get(worksheets.get("Client").getCells().getMaxDataRow()+1, 0).getStringValue().equals("")){
+           return 0;
+       }
+       return Integer.parseInt(worksheets.get("Client").getCells().get(worksheets.get("Client").getCells().getMaxDataRow(), 0).getStringValue());
+    }
 
+
+	public static void main(String[] args) throws  Exception, FileNotFoundException {
+
+	
 		Test test = new Test();
 
 
