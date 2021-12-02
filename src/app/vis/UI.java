@@ -97,6 +97,7 @@ public class UI {
     private VenueManagement venMan = new VenueManagement();
     private ClientManagement clientMan = new ClientManagement();
     private Inventory itemMan = new Inventory();
+    private Reservation res = new Reservation();
     private static Spreadsheet sp;
     /**Souynd Constants */
     private final String startSound = "src/res/sound/start2.wav";
@@ -1693,7 +1694,7 @@ public class UI {
         pnlDisplay.add(txtPrice);
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(new createVenueButtonListener());
+        cmdSelect.addActionListener(e -> {res.cReservation(new int[]{datePicker1.getModel().getYear(),datePicker1.getModel().getMonth(),datePicker1.getModel().getDay()}, new int[]{datePicker2.getModel().getYear(),datePicker2.getModel().getMonth(),datePicker2.getModel().getDay()}, Double.parseDouble(txtPrice.getText())); createReservationDisplay.dispose();});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -1994,7 +1995,7 @@ public class UI {
         else if(type == 2){//Reservation view
             String[] columnName =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
             Reservation res = new Reservation();
-            //clientList = res.viewAllReservations();
+            clientList = res.viewAllReservations();
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
@@ -2133,7 +2134,12 @@ public class UI {
         }
         else if(type == 2){//Reservation 
             Reservation res = new Reservation();
-            //clientList = res.viewAllReservations();
+            list = res.viewAllReservations();
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
         }
         else if(type == 3){//Venue
             VenueManagement ven = new VenueManagement();
@@ -2145,6 +2151,13 @@ public class UI {
             }
         }
         else if(type == 4){//Inventory 
+            Inventory inv = new Inventory();
+            list = inv.viewAllItems();
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
         }
 
         //Create spacing between interfaces

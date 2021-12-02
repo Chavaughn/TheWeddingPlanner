@@ -19,6 +19,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import app.auth.User;
 import app.manage.Client;
+import app.manage.Inventory;
+import app.manage.Item;
+import app.manage.Reservation;
 import app.manage.Venue;
 
 
@@ -35,7 +38,6 @@ public class Spreadsheet {
         workbook.createSheet("Reservation");
         workbook.createSheet("Client");
         workbook.createSheet("Inventory");
-        workbook.createSheet("Items");
 
         if (!filecheck()){
             workbook = new XSSFWorkbook(fis);
@@ -46,8 +48,7 @@ public class Spreadsheet {
         data.put("2", new Object[] {"VID", "Venue Name", "Date", "Venue Type", "Location", "Estimated Items Needed"});
         data.put("3", new Object[] {"RID", "Wedding Date", "Reservsation Date", "Approximate Price"});
         data.put("4", new Object[] {"CID", "Name", "Date of Birth", "Email", "Phone Numbers"});
-        data.put("5", new Object[] {"Chairs"});
-        data.put("6", new Object[] {"Name", "Quantity"});
+        data.put("5", new Object[] {"Name", "Quantity", "Type"});
         Set<String> keyset = data.keySet();
     
         int rownum = 0;
@@ -185,6 +186,55 @@ public class Spreadsheet {
 
         for(int x=0; x<7 ; x++){
             workbook.getSheet("Client").autoSizeColumn(x);
+        } 
+
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
+            workbook.write(outputStream);
+        }
+
+    }
+
+    public void writeReservationSheet(Reservation res) throws FileNotFoundException, IOException{
+
+        int rowCount = workbook.getSheet("Reservation").getLastRowNum();
+        Row row =  workbook.getSheet("Reservation").createRow(++rowCount);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(res.getResId()+"");
+
+        cell = row.createCell(1);
+        cell.setCellValue(res.getWeddingDate().toString());
+        
+        cell = row.createCell(2);
+        cell.setCellValue(res.getResDate().toString());
+
+        cell = row.createCell(3);
+        cell.setCellValue(res.getappPrice());
+
+        for(int x=0; x<7 ; x++){
+            workbook.getSheet("Reservation").autoSizeColumn(x);
+        } 
+
+        try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {
+            workbook.write(outputStream);
+        }
+
+    }
+
+    public void writeInventorySheet(Item itm) throws FileNotFoundException, IOException{
+
+        int rowCount = workbook.getSheet("Inventory").getLastRowNum();
+        Row row =  workbook.getSheet("Inventory").createRow(++rowCount);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(itm.getName());
+
+        cell = row.createCell(1);
+        cell.setCellValue(itm.getQuantity()+"");
+        
+        cell = row.createCell(2);
+        cell.setCellValue(itm.getItemType());
+
+        for(int x=0; x<7 ; x++){
+            workbook.getSheet("Inventory").autoSizeColumn(x);
         } 
 
         try (FileOutputStream outputStream = new FileOutputStream(new File("src/res/sheets/The_Wedding_Planner.xlsx"))) {

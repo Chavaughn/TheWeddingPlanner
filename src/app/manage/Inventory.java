@@ -14,6 +14,7 @@ public class Inventory{
         //write ItemSheet() needs to be inplemented before removing comment
         try {
             sp = new Spreadsheet();
+            sp.writeInventorySheet(item);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,6 +30,7 @@ public class Inventory{
         }
         return sp.readSheet("Inventory");
     }
+
 
     public void editItem(String ItemId){
 
