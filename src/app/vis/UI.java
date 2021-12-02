@@ -688,7 +688,7 @@ public class UI {
       cmdClient.setPreferredSize(new Dimension(150, 100));
 
       //Change this icon later
-      cmdHistory = new JButton("     History             ", viewpasticon);
+      cmdHistory = new JButton("     History[X]       ", viewpasticon);
       cmdHistory.setPreferredSize(new Dimension(150, 100));
       
       cmdExit = new JButton          ("        Exit                ", exiticon);
