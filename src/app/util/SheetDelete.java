@@ -24,7 +24,7 @@ import app.manage.Reservation;
 import app.manage.Venue;
 
 
-public class Test  {
+public class SheetDelete  {
 
     
    
@@ -293,9 +293,8 @@ public class Test  {
 
 
 	public static void main(String[] args) throws  Exception, FileNotFoundException {
-
 	
-		Test test = new Test();
+		new SheetDelete();
 
 
         
