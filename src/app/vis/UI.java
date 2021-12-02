@@ -138,6 +138,8 @@ public class UI {
             case 16:
                 deleteListItem(UI.type);
                 break;
+            case 17:
+                modifyData(UI.type);
             default:
                 break;
         }
@@ -1366,6 +1368,7 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {   
             playSound(buttonPressSound);
+            new UI(17);
         }
     }
 
@@ -2174,6 +2177,139 @@ public class UI {
         createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(createVenueDisplay);
     }
+    /* ------------------------------------ MODIFY SCREEN -------------------------------------*/
+    public void modifyData(int type)
+    {
+        this.type = type;
+        JTextField  txtID;   
+        JTextField  txtName;
+        JButton     cmdMod;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
+        JLabel      instructions;
+        //JLabel      dateinstructions;
+        JLabel      title = new JLabel("<html><h>Select Data To Modify</h><html>");
+        ArrayList<String[]> theList = new ArrayList<String[]>();
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        //String  list1[];
+
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        GridLayout layout = new GridLayout(2,2);
+
+        if(type == 1){//Client 
+            ClientManagement clientMang = new ClientManagement();
+            list = clientMang.viewAllClients();//Need a get method in client management to return just names
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
+        }
+        else if(type == 2){//Reservation 
+            Reservation res = new Reservation();
+            //clientList = res.viewAllReservations();
+        }
+        else if(type == 3){//Venue
+            VenueManagement ven = new VenueManagement();
+            list = ven.viewAllVenues();//Need a get method in client management to return just names
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
+        }
+        else if(type == 4){//Inventory 
+        }
+
+        //Create spacing between interfaces
+        //layout.setVgap(10);
+        //layout.setHgap(-20);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdMod     = new JButton("Edit", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdMod.setSize(new Dimension(340, 100));
+        cmdMod.setPreferredSize(new Dimension(76,40));
+        cmdMod.setForeground(new Color(221,55,78));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdMod.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdMod);
+        pnlCommand.add(cmdClose);
+
+        //Add Parish selection instructions text to panel
+        instructions = new JLabel("Please Select The Data To Edit");
+        instructions.setForeground(Color.WHITE);
+        pnlDisplay.add(instructions); 
+
+        String[] newList = new String[theList.size()];
+        try{
+            theList.toArray(newList);
+        }catch(ArrayStoreException e){
+            System.out.println("End me");
+        }
+        //System.out.println(Arrays.toString(newList));
+        String newerList;
+
+        for (int i=0; i<theList.size();i++){
+            //System.out.println(Arrays.toString(theList.get(i)));
+            newList[i] = Arrays.toString(theList.get(i));
+            //System.out.println(Arrays.toString(newList));
+        }
+        //Create drop down box
+        final JComboBox dropDownBox1 =new JComboBox(newList);
+        //final JComboBox dropDownBox2 =new JComboBox(Venue.VENUE_TYPES);
+        dropDownBoxMenu = dropDownBox1;
+        //dropDownBoxVType = dropDownBox2;
+        pnlDisplay.add(dropDownBox1);
+        dropDownBox1.setBounds(50, 100,90,20);  
+
+        //Give Buttons ActionListeners
+        //TODO Add error handling for the if cells empty
+        cmdMod.addActionListener(new EditButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        createVenueDisplay.add(titlePanel, BorderLayout.NORTH);
+        createVenueDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createVenueDisplay);
+    }
     private class CloseButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -2185,6 +2321,14 @@ public class UI {
             createClientDisplay.setVisible(false);
             createInventoryItemDisplay.setVisible(false);
 
+        }
+    }
+    private class EditButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            playSound(buttonPressSound);
+            createVenueDisplay.setVisible(false);
         }
     }
 }
