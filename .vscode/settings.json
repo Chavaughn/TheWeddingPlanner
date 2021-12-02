@@ -1,27 +1,24 @@
 {
-    "java.project.referencedLibraries": {
-        "include": [
-            "lib/**/*.jar",
-            "src/res/jar imports/poi-5.0.0/poi-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-excelant-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-integration-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-ooxml-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-ooxml-full-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-ooxml-lite-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/poi-scratchpad-5.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/ooxml-lib/commons-compress-1.20.jar",
-            "src/res/jar imports/poi-5.0.0/ooxml-lib/curvesapi-1.06.jar",
-            "src/res/jar imports/poi-5.0.0/ooxml-lib/xmlbeans-4.0.0.jar",
-            "src/res/jar imports/poi-5.0.0/lib/commons-codec-1.15.jar",
-            "src/res/jar imports/poi-5.0.0/lib/commons-collections4-4.4.jar",
-            "src/res/jar imports/poi-5.0.0/lib/commons-math3-3.6.1.jar",
-            "src/res/jar imports/poi-5.0.0/lib/SparseBitSet-1.2.jar",
-            "src/res/jar imports/poi-5.0.0/ooxml-lib/poi-ooxml-schemas-4.1.2.jar",
-            "src/res/jar imports/Spire.Xls.jar",
-            "src/res/jar imports/aspose-cells-21.11.jar",
-            "src/res/jar imports/aspose-cells-21.11-gridweb.jar"
-        ],
-        "exclude": [
-        ]
-    }
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "src/res/jar imports/poi-5.0.0/poi-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-excelant-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-integration-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-ooxml-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-ooxml-full-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-ooxml-lite-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/poi-scratchpad-5.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/ooxml-lib/commons-compress-1.20.jar",
+        "src/res/jar imports/poi-5.0.0/ooxml-lib/curvesapi-1.06.jar",
+        "src/res/jar imports/poi-5.0.0/ooxml-lib/xmlbeans-4.0.0.jar",
+        "src/res/jar imports/poi-5.0.0/lib/commons-codec-1.15.jar",
+        "src/res/jar imports/poi-5.0.0/lib/commons-collections4-4.4.jar",
+        "src/res/jar imports/poi-5.0.0/lib/commons-math3-3.6.1.jar",
+        "src/res/jar imports/poi-5.0.0/lib/SparseBitSet-1.2.jar",
+        "src/res/jar imports/poi-5.0.0/ooxml-lib/poi-ooxml-schemas-4.1.2.jar",
+        "src/res/jar imports/Spire.Xls.jar",
+        "src/res/jar imports/aspose-cells-21.11.jar",
+        "src/res/jar imports/aspose-cells-21.11-gridweb.jar",
+        "src/res/jar imports/jdatepicker-1.3.2.jar"
+    ]
 }

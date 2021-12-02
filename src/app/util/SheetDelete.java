@@ -44,7 +44,7 @@ public class SheetDelete  {
   
     
 
-    public Test()throws  Exception, FileNotFoundException{
+    public SheetDelete()throws  Exception, FileNotFoundException{
         
         worksheets.get("Sheet1").setName("User");
         

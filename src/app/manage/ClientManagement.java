@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import app.util.SheetDelete;
 import app.util.Spreadsheet;
 
 public class ClientManagement {
@@ -34,7 +35,13 @@ public class ClientManagement {
 
     }
 
-    public void removeClient(String clientId){
+    public void removeClient(int clientId){
+        try {
+            SheetDelete sd = new SheetDelete();
+            sd.delete(clientId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }
