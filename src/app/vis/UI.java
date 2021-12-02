@@ -140,6 +140,7 @@ public class UI {
                 break;
             case 17:
                 modifyData(UI.type);
+                break;
             default:
                 break;
         }
@@ -2168,7 +2169,7 @@ public class UI {
 
         //Give Buttons ActionListeners
         //TODO Add error handling for the if cells empty
-        cmdDelete.addActionListener(new DeleteButtonListener());
+        cmdDelete.addActionListener((e -> {});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
