@@ -15,6 +15,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Arrays;
 
 import net.sourceforge.jdatepicker.impl.*;
 import net.sourceforge.jdatepicker.util.*; 
@@ -133,6 +134,9 @@ public class UI {
                 break;
             case 15:
                 ViewList(UI.type);
+                break;
+            case 16:
+                deleteListItem(UI.type);
                 break;
             default:
                 break;
@@ -557,6 +561,7 @@ public class UI {
       {
         playSound(buttonPressSound);
           adminDisplay.setVisible(false);
+          staffDisplay.setVisible(false);
           new UI(1);
       }
   }
@@ -1370,6 +1375,7 @@ public class UI {
         public void actionPerformed(ActionEvent e)
         {
             playSound(buttonPressSound);
+            new UI(16);
         }
     }
     /* ------------------------------------ CREATE VENUE SCREEN -------------------------------------*/
@@ -1937,9 +1943,10 @@ public class UI {
         String[]    columnNames = {};
 
         pnlCommand = new JPanel();
-        pnlDisplay = new JPanel();
+        //pnlDisplay = new JPanel();
         viewListDisplay.setLayout(new GridLayout(2,1));
-        pnlCommand.setBackground(new Color(239,255,239));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBorder(BorderFactory.createEmptyBorder(30, 10, 10, 10));
        
         if(type == 1){//Client view
             String[] columnName =  {"ClientID", "Name", "Date of Birth", "Email", "Phone Numbers"};
@@ -1950,7 +1957,7 @@ public class UI {
         else if(type == 2){//Reservation view
             String[] columnName =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
             Reservation res = new Reservation();
-            // clientList = res.viewAllReservations();
+            //clientList = res.viewAllReservations();
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
@@ -1961,59 +1968,58 @@ public class UI {
         }
         else if(type == 4){//Inventory view
         }
-
         
-
-        //columnNames = columnName;
-        //System.out.println(clientMang.viewAllClients());
-        
-        model = new DefaultTableModel(columnNames,0);
+        model = new DefaultTableModel(columnNames,0){
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         table = new JTable(model);
         showTable(clientList);
 
+        //Set table properties
         setModel(columnNames);
-        table.setBackground(new Color(239,255,239));
+        table.setBackground(new Color(15, 17, 22));
+        table.setForeground(Color.white);
+        table.getTableHeader().setBackground(new Color(15, 17, 22));
+        table.getTableHeader().setForeground(Color.white);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setShowGrid(false);
     
     
         table.setPreferredScrollableViewportSize(new Dimension(500, clientList.size()*15+50));
         table.setFillsViewportHeight(true);
         
+        //Set scroll panel properties
         scrollPane = new JScrollPane(table);
+        scrollPane.setBackground(new Color(15, 17, 22));
+        scrollPane.setForeground(Color.white);
+        scrollPane.setBorder(null);
         viewListDisplay.add(scrollPane);
 
 
 
        //Create icons for buttons
-       //Icon sortbudgeticon = new ImageIcon("icons/sorticon.png");
        Icon exiticon = new ImageIcon("src/res/icons/exiticon.png");
-       //Icon sortnameicon = new ImageIcon("icons/sorticon.png");
 
 
         //Create Buttons
-        //cmdSortBudget  = new JButton("Sort by Budget", sortbudgeticon);
         cmdClose   = new JButton("Close", exiticon);
-        //cmdSortName = new JButton("Sort by Name", sortnameicon);
 
 
         //Set Background Colours
-        //cmdSortBudget.setBackground(new Color(238,232,170));
-        cmdClose.setBackground(new Color(238,232,170));
-        //cmdSortName.setBackground(new Color(238,232,170));
+        cmdClose.setBackground(new Color(221,55,78));
 
 
         //Add ActionListeners to Buttons
         cmdClose.addActionListener(new CloseButtonListener());
-        //cmdSortBudget.addActionListener(new SortBudgetButtonListener());
-        //cmdSortName.addActionListener(new SortNameButtonListener());
+        cmdClose.setForeground(Color.white);
         
-
         //Add Buttons to the Screen
-        //pnlCommand.add(cmdSortBudget);
-        //pnlCommand.add(cmdSortName);
         pnlCommand.add(cmdClose);
        
 
-        viewListDisplay.add(pnlCommand);
+        viewListDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(viewListDisplay);
     }
 
@@ -2035,6 +2041,139 @@ public class UI {
         //String[] item={name,""+ v.getQuantity()}; 
         model.addRow(v);
     }
+    /* ------------------------------------ DELETE SCREEN -------------------------------------*/
+    public void deleteListItem(int type)
+    {
+        this.type = type;
+        JTextField  txtID;   
+        JTextField  txtName;
+        JButton     cmdDelete;
+        JButton     cmdClose;
+        JPanel      pnlCommand = new JPanel();
+        JPanel      pnlDisplay = new JPanel();
+        JPanel      titlePanel = new JPanel();
+        JLabel      instructions;
+        //JLabel      dateinstructions;
+        JLabel      title = new JLabel("<html><h>Delete Selected Client</h><html>");
+        ArrayList<String[]> theList = new ArrayList<String[]>();
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        //String  list1[];
+
+        //Create Title frame
+        titlePanel.setLayout(new GridBagLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
+        //Align text to center
+        title.setHorizontalAlignment(JLabel.RIGHT);
+        title.setForeground(Color.white);
+        titlePanel.add(title);
+
+        //Set border and background of panels
+        pnlDisplay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlDisplay.setBackground(new Color(15, 17, 22));
+        pnlCommand.setBackground(new Color(15, 17, 22));
+        titlePanel.setBackground(new Color(15, 17, 22));
+        txtID = new JTextField(5);
+
+        //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
+        txtID.setHorizontalAlignment(JTextField.CENTER);
+        GridLayout layout = new GridLayout(2,2);
+
+        if(type == 1){//Client 
+            ClientManagement clientMang = new ClientManagement();
+            list = clientMang.viewAllClients();//Need a get method in client management to return just names
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
+        }
+        else if(type == 2){//Reservation 
+            Reservation res = new Reservation();
+            //clientList = res.viewAllReservations();
+        }
+        else if(type == 3){//Venue
+            VenueManagement ven = new VenueManagement();
+            list = ven.viewAllVenues();//Need a get method in client management to return just names
+            if (list.size()>0){
+                for (int i=1; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
+        }
+        else if(type == 4){//Inventory 
+        }
+
+        //Create spacing between interfaces
+        //layout.setVgap(10);
+        //layout.setHgap(-20);
+
+        //Set panel layout
+        pnlDisplay.setLayout(layout);
+
+        //Create Icons For Buttons
+        Icon selecticon = new ImageIcon("icons/addpromotericon.png");
+        Icon closeicon = new ImageIcon("icons/exiticon.png");
+
+        //Create Buttons
+        cmdDelete     = new JButton("Delete", selecticon);
+        cmdClose   = new JButton("Close", closeicon);
+
+        //Set size of  buttons
+        cmdDelete.setSize(new Dimension(340, 100));
+        cmdDelete.setPreferredSize(new Dimension(76,40));
+        cmdDelete.setForeground(new Color(221,55,78));
+        cmdClose.setSize(new Dimension(340, 100));
+        cmdClose.setPreferredSize(new Dimension(75,40));
+
+        //Set Background colour of Buttons
+        cmdDelete.setBackground(new Color(226,228,233));
+        cmdClose.setBackground(new Color(221,55,78));
+        cmdClose.setForeground(Color.white);
+
+        //Add Buttons to Screen
+        pnlCommand.add(cmdDelete);
+        pnlCommand.add(cmdClose);
+
+        //Add Parish selection instructions text to panel
+        instructions = new JLabel("Please Select A Client To Remove");
+        instructions.setForeground(Color.WHITE);
+        pnlDisplay.add(instructions); 
+
+        String[] newList = new String[theList.size()];
+        try{
+            theList.toArray(newList);
+        }catch(ArrayStoreException e){
+            System.out.println("End me");
+        }
+        //System.out.println(Arrays.toString(newList));
+        String newerList;
+
+        for (int i=0; i<theList.size();i++){
+            //System.out.println(Arrays.toString(theList.get(i)));
+            newList[i] = Arrays.toString(theList.get(i));
+            //System.out.println(Arrays.toString(newList));
+        }
+        //Create drop down box
+        final JComboBox dropDownBox1 =new JComboBox(newList);
+        //final JComboBox dropDownBox2 =new JComboBox(Venue.VENUE_TYPES);
+        dropDownBoxMenu = dropDownBox1;
+        //dropDownBoxVType = dropDownBox2;
+        pnlDisplay.add(dropDownBox1);
+        dropDownBox1.setBounds(50, 100,90,20);  
+
+        //Give Buttons ActionListeners
+        //TODO Add error handling for the if cells empty
+        cmdDelete.addActionListener(new DeleteButtonListener());
+        cmdClose.addActionListener(new CloseButtonListener());
+
+        //Add Panels to frame
+        createVenueDisplay.add(titlePanel, BorderLayout.NORTH);
+        createVenueDisplay.add(pnlDisplay, BorderLayout.CENTER);
+        createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
+        packFrameLogin(createVenueDisplay);
+    }
     private class CloseButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -2047,63 +2186,7 @@ public class UI {
             createInventoryItemDisplay.setVisible(false);
 
         }
-    }/* Might figure out how to use this to change the entered price to look like currency when they click off the jtextfield
-    public class FocusEvent implements FocusListener{
-        public FocusEvent() {
-
-            JTextField textField = new JTextField("A TextField");
-            textField.addFocusListener(this);
-
-            JLabel label = new JLabel("A Label");
-            label.addFocusListener(this);
-
-            JComboBox comboBox = new JComboBox(vector);
-            comboBox.addFocusListener(this);
-
-            JButton button = new JButton("A Button");
-            button.addFocusListener(this);
-
-            JList list = new JList(listVector);
-            list.setSelectedIndex(1); //It's easier to see the focus change
-                                      //if an item is selected.
-            list.addFocusListener(this);
-            JScrollPane listScrollPane = new JScrollPane(list);
-            
-
-    
-            //Set up the area that reports focus-gained and focus-lost events.
-            display = new JTextArea();
-            display.setEditable(false);
-            //The method setRequestFocusEnabled prevents a
-            //component from being clickable, but it can still
-            //get the focus through the keyboard - this ensures
-            //user accessibility.
-            display.setRequestFocusEnabled(false);
-            display.addFocusListener(this);
-            JScrollPane displayScrollPane = new JScrollPane(display);
-    
-     
-        }
-
-        public void focusGained(FocusEvent e) {
-            displayMessage("Focus gained", e);
-        }
-    
-        public void focusLost(FocusEvent e) {
-            displayMessage("Focus lost", e);
-        }
-    
-        void displayMessage(String prefix, FocusEvent e) {
-            display.append(prefix
-                           + (e.isTemporary() ? " (temporary):" : ":")
-                           +  e.getComponent().getClass().getName()
-                           + "; Opposite component: " 
-                           + (e.getOppositeComponent() != null ?
-                              e.getOppositeComponent().getClass().getName() : "null")
-                           + newline); 
-        }
-
-    }*/
+    }
 }
 
 class MyDefaultMetalTheme extends DefaultMetalTheme {
