@@ -2196,7 +2196,7 @@ public class UI {
 
         //Give Buttons ActionListeners
         //TODO Add error handling for the if cells empty
-        cmdDelete.addActionListener((e -> {});
+        cmdDelete.addActionListener(e -> {clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(1)); createVenueDisplay.setVisible(false); createVenueDisplay.setVisible(true);});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame

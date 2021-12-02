@@ -16,7 +16,7 @@ public class Inventory{
         //write ItemSheet() needs to be inplemented before removing comment
         try {
             spreadsheet = new Spreadsheet();
-            spreadsheet.writeItemSheet(item);
+            //spreadsheet.writeItemSheet(item);
         } catch (InvalidFormatException | IOException| NullPointerException e) {
             e.printStackTrace();
         }
