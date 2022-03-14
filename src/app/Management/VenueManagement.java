@@ -20,8 +20,9 @@ public class VenueManagement {
         return dBM.viewVenues();
     }
 
-    public void editVenue(String venueId){
-
+    public void editVenue(Venue ven, int id){
+        dBM = new DatabaseMng();
+        dBM.updateVenueTable(ven, id);
     }
 
     public void removeVenue(String record){

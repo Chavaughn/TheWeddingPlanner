@@ -1,5 +1,5 @@
 package app.Utility;
 
-public class DataSecurity {
+public class Validation {
     
 }

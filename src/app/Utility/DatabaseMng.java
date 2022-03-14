@@ -2,7 +2,6 @@ package app.Utility;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import app.Management.Venue;
@@ -22,7 +21,7 @@ public class DatabaseMng {
         SELECT * FROM TableName WHERE id=(SELECT max(id) FROM TableName);
     */
 
-    private String updateVenueTable =  "CREATE TABLE IF NOT EXISTS Venue"
+    private String initVenueTable =  "CREATE TABLE IF NOT EXISTS Venue"
     + "  (Id           VARCHAR(32),"
     + "   VenueName            VARCHAR(50),"
     + "   Type          VARCHAR(25),"
@@ -44,8 +43,6 @@ public class DatabaseMng {
     +"2021-12-18')";
 
 
-    private PreparedStatement statement;
-    private ResultSet result;
     private Connection con;
     private String lastvenueid = "0";
     private ArrayList<String[]> viewValues;
@@ -58,7 +55,7 @@ public class DatabaseMng {
 
             Statement statement = con.createStatement();
 
-            statement.execute(updateVenueTable);
+            statement.execute(initVenueTable);
             // statement.execute(VenueTableInit);
 
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Venue WHERE Id=(SELECT max(Id) FROM Venue)");
@@ -121,6 +118,21 @@ public class DatabaseMng {
         + venue.getLocation()+"', '"
         + venue.getDate().toString()+"')") 
         == true?true:false); 
+    }
+
+    public void updateVenueTable(Venue venue, int Id){
+        System.out.println("Editing Id: "+ Id+" From table Venue");
+        System.out.println(executeQ("UPDATE Venue "
+        + "Set" 
+        +" VenueName = '"
+        + venue.getVenueName()+"',"
+        +" Type = '"
+        + venue.getVenueType().toString()+"',"
+        +" Parish = '"
+        + venue.getLocation().toString()+"',"
+        +" Date = '"
+        + venue.getDate().toString()+"' WHERE Id = '"+ Id + "'") 
+        == true?true:false);  
     }
 
     public void removeFromVenueTable(int Id){

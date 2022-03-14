@@ -102,6 +102,9 @@ public class UI {
     private final String buttonPressSound = "src/res/sound/button2.wav";
     private final String errorSound = "src/res/sound/error.wav";
 
+    private static int ups = 0;
+    private static int venueId = 0;
+
     public UI(int state){
         this.state = state;
         switch (state) {
@@ -171,6 +174,9 @@ public class UI {
     }
     public void setType(int i){
         UI.type = i;
+    }
+    public void setUps(int i){
+        UI.ups = i;
     }
     public DefaultTableModel setModel(String[] columnNam){
         model=new DefaultTableModel(columnNam,0);
@@ -1520,7 +1526,24 @@ public class UI {
 
         //Give Buttons ActionListeners
         //TODO Add error handling for the if cells empty
-        cmdSelect.addActionListener(e -> {venMan.createVenue(txtName.getText(), dropDownBox1.getSelectedItem().toString(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},dropDownBox2.getSelectedItem().toString()); createVenueDisplay.dispose();});
+        
+            cmdSelect.addActionListener(e -> {
+                if (ups == 0){
+                    venMan.createVenue(txtName.getText(),
+                    dropDownBox1.getSelectedItem().toString(), 
+                    new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},
+                    dropDownBox2.getSelectedItem().toString()); 
+                    createVenueDisplay.dispose();
+                }else{
+                    setUps(0);
+                    System.out.println(venueId);
+                    venMan.editVenue(new Venue(txtName.getText(),
+                    new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},
+                    dropDownBox1.getSelectedItem().toString(), 
+                    dropDownBox2.getSelectedItem().toString()), UI.venueId); 
+                    createVenueDisplay.dispose();
+                }
+            });
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -1991,7 +2014,7 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
-            String[] columnName =  {"VenueID ","Venue Name",  "Date", "Venue Type", "Location"};
+            String[] columnName =  {"VenueID ","Venue Name", "Venue Type", "Location", "Date"};
             VenueManagement ven = new VenueManagement();
             clientList = ven.viewAllVenues();
             columnNames = columnName;
@@ -2276,7 +2299,7 @@ public class UI {
             ClientManagement clientMang = new ClientManagement();
             list = clientMang.viewAllClients();//Need a get method in client management to return just names
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2289,7 +2312,7 @@ public class UI {
             VenueManagement ven = new VenueManagement();
             list = ven.viewAllVenues();//Need a get method in client management to return just names
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2356,7 +2379,14 @@ public class UI {
 
         //Give Buttons ActionListeners
         //TODO Add error handling for the if cells empty
-        cmdMod.addActionListener(new EditButtonListener());
+        cmdMod.addActionListener( e -> {
+            setvenueId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
+            System.out.println("ID recorded: "+venueId);
+            setUps(1);
+            playSound(buttonPressSound);
+            new UI(10);
+            createVenueDisplay.setVisible(false);
+        });
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -2365,6 +2395,10 @@ public class UI {
         createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(createVenueDisplay);
     }
+    private void setvenueId(int id) {
+        UI.venueId = id;
+    }
+
     private class CloseButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -2382,7 +2416,9 @@ public class UI {
     {
         public void actionPerformed(ActionEvent e)
         {
+            setUps(1);
             playSound(buttonPressSound);
+            new UI(10);
             createVenueDisplay.setVisible(false);
         }
     }
