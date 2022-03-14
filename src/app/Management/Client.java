@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import app.Utility.Spreadsheet;
 
 public class Client{
     private int cId;
@@ -12,7 +11,6 @@ public class Client{
     private LocalDate dateOfBirth;
     private String email; //Validate using regex
     private String phoneNumber;
-    Spreadsheet sp;
 
     /**REGEX for email check */
     private static final String EMAIL_PATTERN= "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
@@ -23,13 +21,6 @@ public class Client{
 
     /**Before calling this constructor make sure to check if the email they are giving is correct and validated using the isEmailValid() method */
     public Client(String name, int[] dOB, String email, String phoneNumber){
-        
-        try {
-            sp = new Spreadsheet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        this.cId = sp.getLastId() +1;
         this.name = name;
         this.dateOfBirth = LocalDate.of(dOB[0],dOB[1],dOB[2]);
         this.email = email;

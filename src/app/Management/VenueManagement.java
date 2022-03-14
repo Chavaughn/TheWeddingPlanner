@@ -2,37 +2,31 @@ package app.Management;
 
 import java.util.ArrayList;
 
-import app.Utility.Spreadsheet;
+import app.Utility.DatabaseMng;
+
 
 public class VenueManagement {
     private Venue venue;
-    private Spreadsheet sp;
+    private DatabaseMng dBM;
 
-    public Venue createVenue(String name, String Location,int[] date, String venType){
-        venue = new Venue(name, date, venType,Location);
-        try {
-            sp = new Spreadsheet();
-            sp.writeVenueSheet(venue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return this.venue;
+    public void createVenue(String name, String Location,int[] date, String venType){
+        venue = new Venue(name, date, venType, Location);
+        dBM = new DatabaseMng();
+        dBM.AddToVenueTable(venue);
     }
 
     public ArrayList<String[]> viewAllVenues(){
-        try {
-            sp = new Spreadsheet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sp.readSheet("Venue");
+        dBM = new DatabaseMng();
+        return dBM.viewVenues();
     }
 
     public void editVenue(String venueId){
 
     }
 
-    public void removeVenue(String venueId){
-
+    public void removeVenue(String record){
+        dBM = new DatabaseMng();
+        int Id = Integer.parseInt(record.split(",")[0].replace("[", ""));
+        dBM.removeFromVenueTable(Id);
     }
 }

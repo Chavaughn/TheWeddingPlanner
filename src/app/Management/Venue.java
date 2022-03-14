@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import app.Utility.Spreadsheet;
-import app.Utility.DatabaseManagement.DatabaseMng;
-
 public class Venue extends Client{
     private String venueName;
     private LocalDate date;
@@ -15,11 +12,8 @@ public class Venue extends Client{
     private int venueID;
     private String venType;
     private List<String> itemsNeeded = new ArrayList<String>();// Format: Item name, Amount needed, Grouping
-    private Spreadsheet sp;
-    private DatabaseMng db;
-
     /**Constants */
-    public final static String[] VENUE_TYPES = {"Hotel", "Beach-side", "Waterfall", "Church"};
+    public final static String[] VENUE_TYPES = {"Hotel_Package", "Beach-side_Package", "Waterfall_Package", "Church_Package"};
     public final static String[] PARISHES = {"Kingston", "Saint Andrew", "Saint Elizabeth", "Hanover", "Saint James", "Trelawny", "	Westmoreland", "Clarendon", "Manchester", "Saint Ann", "Saint Catherine", "Saint Mary", "Portland", "Saint Thomas"};
 
     /**Default Constructor */
@@ -29,14 +23,6 @@ public class Venue extends Client{
 
     /**Constructor */
     public Venue(String venueName, int[] date, String venType,String location){
-        try {
-            sp = new Spreadsheet();
-            db = new DatabaseMng();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //this.venueID = sp.getLastId()+1;
-        this.venueID = Integer.parseInt(DatabaseMng.venueID())+1; 
         this.venueName = venueName;
         this.date = LocalDate.of(date[0], date[1], date[2]);
         setVenueType(venType);

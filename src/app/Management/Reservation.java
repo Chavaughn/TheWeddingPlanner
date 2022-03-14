@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
-import app.Utility.Spreadsheet;
-
 public class Reservation extends Client{
     private int resId;
     private LocalDate weddingDate;
@@ -41,12 +37,6 @@ public class Reservation extends Client{
     public Reservation cReservation(int[] weddingDate,int[] resDate, double appPrice){
         
         res = new Reservation(weddingDate, resDate, appPrice);
-        try {
-            sp = new Spreadsheet();
-            sp.writeReservationSheet(res);
-        } catch (InvalidFormatException | IOException e) {
-            e.printStackTrace();
-        }
         return this.res;
     }
 
@@ -60,12 +50,7 @@ public class Reservation extends Client{
     }
 
     public ArrayList<String[]> viewAllReservations(){
-        try {
-            sp = new Spreadsheet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sp.readSheet("Reservation");
+        return null;
     }
 
     /**RETURNS the Date the reservation was made of the reservation object */

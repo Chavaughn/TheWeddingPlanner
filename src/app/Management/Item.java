@@ -16,12 +16,6 @@ public class Item {
 
     /**Constructor */
     public Item( String name, int quantity, String itemType) {
-        try {
-            new Spreadsheet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
         this.name=name;
         this.quantity= quantity;
         setItemType(itemType);

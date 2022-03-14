@@ -48,7 +48,6 @@ import app.Management.Item;
 import app.Management.Reservation;
 import app.Management.Venue;
 import app.Management.VenueManagement;
-import app.Utility.Spreadsheet;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
@@ -98,7 +97,6 @@ public class UI {
     private ClientManagement clientMan = new ClientManagement();
     private Inventory itemMan = new Inventory();
     private Reservation res = new Reservation();
-    private static Spreadsheet sp;
     /**Souynd Constants */
     private final String startSound = "src/res/sound/start2.wav";
     private final String buttonPressSound = "src/res/sound/button2.wav";
@@ -289,12 +287,6 @@ public class UI {
     }
 
     public static void main(String[] args) {
-        try {
-            Spreadsheet spe = new Spreadsheet();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         new UI(1);
     }
 
@@ -1999,7 +1991,7 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 3){//Venue view
-            String[] columnName =  {"VenueID ","Venue Name",  "Date", "Venue Type", "Location", "Estimated Items Needed"};
+            String[] columnName =  {"VenueID ","Venue Name",  "Date", "Venue Type", "Location"};
             VenueManagement ven = new VenueManagement();
             clientList = ven.viewAllVenues();
             columnNames = columnName;
@@ -2070,7 +2062,7 @@ public class UI {
     private void showTable(ArrayList<String[]> list)//Put the list of things you want in the table between the () if you wanna use this
     {
         if (list.size()>0){
-            for (int i=1; i<list.size();i++){
+            for (int i=0; i<list.size();i++){
                 addToTable(list.get(i));
             }
         }
@@ -2127,7 +2119,7 @@ public class UI {
             ClientManagement clientMang = new ClientManagement();
             list = clientMang.viewAllClients();//Need a get method in client management to return just names
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2136,7 +2128,7 @@ public class UI {
             Reservation res = new Reservation();
             list = res.viewAllReservations();
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2145,7 +2137,7 @@ public class UI {
             VenueManagement ven = new VenueManagement();
             list = ven.viewAllVenues();//Need a get method in client management to return just names
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2218,7 +2210,21 @@ public class UI {
         dropDownBox1.setBounds(50, 100,90,20);  
 
         //Give Buttons ActionListeners
-        cmdDelete.addActionListener(e -> {clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(1)); createVenueDisplay.dispose();});
+        cmdDelete.addActionListener(e -> {switch (type) {
+            case 1:
+                clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(0));
+                break;
+            case 2:
+                break;
+            case 3:
+                venMan.removeVenue(dropDownBox1.getSelectedItem().toString());
+                break;
+            case 4:
+                break;
+            default:
+                break;
+        }; 
+        createVenueDisplay.dispose();});
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
