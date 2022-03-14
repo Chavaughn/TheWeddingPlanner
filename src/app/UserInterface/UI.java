@@ -1536,11 +1536,10 @@ public class UI {
                     createVenueDisplay.dispose();
                 }else{
                     setUps(0);
-                    System.out.println(venueId);
                     venMan.editVenue(new Venue(txtName.getText(),
                     new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},
-                    dropDownBox1.getSelectedItem().toString(), 
-                    dropDownBox2.getSelectedItem().toString()), UI.venueId); 
+                    dropDownBox2.getSelectedItem().toString(), 
+                    dropDownBox1.getSelectedItem().toString()), UI.venueId); 
                     createVenueDisplay.dispose();
                 }
             });

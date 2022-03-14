@@ -121,15 +121,21 @@ public class DatabaseMng {
     }
 
     public void updateVenueTable(Venue venue, int Id){
+        System.out.println("----------------------------------------");
         System.out.println("Editing Id: "+ Id+" From table Venue");
+        System.out.println("Name: "+ venue.getVenueName());
+        System.out.println("Type: "+ venue.getVenueType());
+        System.out.println("Parish: "+ venue.getLocation());
+        System.out.println("Date: "+ venue.getDate().toString());
+        System.out.println("----------------------------------------");
         System.out.println(executeQ("UPDATE Venue "
         + "Set" 
         +" VenueName = '"
         + venue.getVenueName()+"',"
         +" Type = '"
-        + venue.getVenueType().toString()+"',"
+        + venue.getVenueType()+"',"
         +" Parish = '"
-        + venue.getLocation().toString()+"',"
+        + venue.getLocation()+"',"
         +" Date = '"
         + venue.getDate().toString()+"' WHERE Id = '"+ Id + "'") 
         == true?true:false);  
