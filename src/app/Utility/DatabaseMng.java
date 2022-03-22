@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import app.Management.Venue;
+import app.Management.*;
 
 public class DatabaseMng {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
@@ -28,6 +28,14 @@ public class DatabaseMng {
     + "   Parish           VARCHAR(50),"
     + "   Date           DATE)";
 
+    private String initClientTable = "CREATE TABLE IF NOT EXISTS Clients"
+    + "  (Id           VARCHAR(32),"
+    + "   FirstName            VARCHAR(50),"
+    + "   LastName          VARCHAR(50),"
+    + "   Email           VARCHAR(50),"
+    + "   PhoneNumber           VARCHAR(20),"
+    + "   DateOfBirth           DATE)";
+
     private String VenueTableInit = "INSERT INTO Venue "
     + "Values ( '"
     + "1','"
@@ -45,9 +53,14 @@ public class DatabaseMng {
 
     private Connection con;
     private String lastvenueid = "0";
+    private String lastclientid = "0";
     private ArrayList<String[]> viewValues;
+    private ArrayList<String[]> viewClients;
     
 
+    /**
+     * TODO: Link Reservation to a Client and Reservation to a Vennue with new fields to the database table
+     */
     public DatabaseMng(){
         try{
             Class.forName(jdbcDriver);
@@ -56,22 +69,25 @@ public class DatabaseMng {
             Statement statement = con.createStatement();
 
             statement.execute(initVenueTable);
+            statement.execute(initClientTable);
             // statement.execute(VenueTableInit);
 
+            //TODO: Lower time it takes to init
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Venue WHERE Id=(SELECT max(Id) FROM Venue)");
-            
 
             while (resultSet.next()) {
                 lastvenueid = resultSet.getString("Id");    
             }
+            
+            resultSet = statement.executeQuery("SELECT * FROM Clients WHERE Id=(SELECT max(Id) FROM Clients)");
+
+            while (resultSet.next()) {
+                lastclientid = resultSet.getString("Id");    
+            }
+
         }
-        catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch(Exception e){
+            System.out.println(e);
         }
     }
 
@@ -98,15 +114,40 @@ public class DatabaseMng {
             }
             return viewValues;
         }
-        catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch(Exception e){
+            System.out.println(e);
+            return viewValues;
         }
-        return viewValues;
+    }
+
+    public ArrayList<String[]> viewClients(){
+        viewClients = new ArrayList<>();
+
+        try{
+            Class.forName(jdbcDriver);
+            con = DriverManager.getConnection(dbAddress, userName, password);
+
+            Statement statement = con.createStatement();
+
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Clients");
+            
+
+            while (resultSet.next()) {
+                lastclientid = resultSet.getString("Id");
+                viewClients.add(new String[]{
+                    resultSet.getString("Id"),
+                    resultSet.getString("FirstName"),
+                    resultSet.getString("LastName"),
+                    resultSet.getString("Email"),
+                    resultSet.getString("PhoneNumber"),
+                    resultSet.getString("DateOfBirth")});    
+            }
+            return viewClients;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return viewValues;
+        }
     }
 
     public void AddToVenueTable(Venue venue){
@@ -117,6 +158,18 @@ public class DatabaseMng {
         + venue.getVenueType()+"','"
         + venue.getLocation()+"', '"
         + venue.getDate().toString()+"')") 
+        == true?true:false); 
+    }
+
+    public void AddToClientTable(Client client){
+        System.out.println(executeQ("INSERT INTO Clients "
+        + "Values ( '"
+        + (Integer.parseInt(lastclientid)+1) +"','"
+        + client.getClientName().split(" ")[0]+"','"
+        + client.getClientName().split(" ")[1]+"','"
+        + client.getEmail()+"', '"
+        + client.getPhoneNumber()+"', '"
+        + client.getDateOfBirth().toString()+"')") 
         == true?true:false); 
     }
 
@@ -138,7 +191,30 @@ public class DatabaseMng {
         + venue.getLocation()+"',"
         +" Date = '"
         + venue.getDate().toString()+"' WHERE Id = '"+ Id + "'") 
-        == true?true:false);  
+        == true?"Successfully Executed":"Failed to Execute");  
+    }
+
+    public void updateClientTable(Client client, int Id){
+        System.out.println("----------------------------------------");
+        System.out.println("Editing Id: "+ Id+" From table Clients");
+        System.out.println("Name: "+ client.getClientName());
+        System.out.println("Email: "+  client.getEmail());
+        System.out.println("Phone Number: "+ client.getPhoneNumber());
+        System.out.println("Date of Birth: "+ client.getDateOfBirth().toString());
+        System.out.println("----------------------------------------");
+        System.out.println(executeQ("UPDATE Venue "
+        + "Set" 
+        +" FirstName = '"
+        + client.getClientName().split(" ")[0]+"',"
+        +" LastName = '"
+        + client.getClientName().split(" ")[1]+"',"
+        +" Email = '"
+        + client.getEmail()+"',"
+        +" PhoneNumber = '"
+        + client.getPhoneNumber()+"',"
+        +" Date = '"
+        + client.getDateOfBirth().toString()+"' WHERE Id = '"+ Id + "'") 
+        == true?"Successfully Executed":"Failed to Execute");  
     }
 
     public void removeFromVenueTable(int Id){
@@ -146,7 +222,15 @@ public class DatabaseMng {
         System.out.println(executeQ("DELETE FROM Venue "
         + "WHERE "
         + "Id = '" +Id +"'") 
-        == true?true:false); 
+        == true?"Successfully Executed":"Failed to Execute");
+    }
+
+    public void removeFromClientTable(int Id){
+        System.out.println("Deleting Id: "+ Id+" From table Clients");
+        System.out.println(executeQ("DELETE FROM Client "
+        + "WHERE "
+        + "Id = '" +Id +"'") 
+        == true?"Successfully Executed":"Failed to Execute");
     }
 
     public Boolean executeQ(String query){
@@ -163,10 +247,4 @@ public class DatabaseMng {
             return false;
         }
     }
-
-    public static void main(String[] args) {
-
-    }
-
-    
 }

@@ -1967,7 +1967,7 @@ public class UI {
         pnlDisplay.add(txtPhoneNum);
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(e -> {clientMan.addClient(txtName.getText(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},txtEmail.getText() ,txtPhoneNum.getText());createClientDisplay.dispose(); } );
+        cmdSelect.addActionListener(e -> {clientMan.addClient(txtName.getText(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},txtEmail.getText() ,txtPhoneNum.getText());createClientDisplay.dispose(); } );
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -2001,7 +2001,7 @@ public class UI {
         pnlCommand.setBorder(BorderFactory.createEmptyBorder(30, 10, 10, 10));
        
         if(type == 1){//Client view
-            String[] columnName =  {"ClientID", "Name", "Date of Birth", "Email", "Phone Numbers"};
+            String[] columnName =  {"ClientID", "First Name","Last Name", "Email", "Phone Numbers","Date of Birth"};
             ClientManagement clientMang = new ClientManagement();
             clientList = clientMang.viewAllClients();
             columnNames = columnName;
@@ -2234,7 +2234,7 @@ public class UI {
         //Give Buttons ActionListeners
         cmdDelete.addActionListener(e -> {switch (type) {
             case 1:
-                clientMan.removeClient((int)dropDownBox1.getSelectedItem().toString().charAt(0));
+                clientMan.removeClient(dropDownBox1.getSelectedItem().toString());
                 break;
             case 2:
                 break;
@@ -2296,7 +2296,7 @@ public class UI {
 
         if(type == 1){//Client 
             ClientManagement clientMang = new ClientManagement();
-            list = clientMang.viewAllClients();//Need a get method in client management to return just names
+            list = clientMang.viewAllClients();
             if (list.size()>0){
                 for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
@@ -2309,7 +2309,7 @@ public class UI {
         }
         else if(type == 3){//Venue
             VenueManagement ven = new VenueManagement();
-            list = ven.viewAllVenues();//Need a get method in client management to return just names
+            list = ven.viewAllVenues();
             if (list.size()>0){
                 for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
@@ -2421,37 +2421,4 @@ public class UI {
             createVenueDisplay.setVisible(false);
         }
     }
-}
-
-class MyDefaultMetalTheme extends DefaultMetalTheme {
-    public ColorUIResource getWindowTitleInactiveBackground() {
-      return new ColorUIResource(java.awt.Color.DARK_GRAY);
-    }
-    public ColorUIResource getWindowTitleBackground() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getPrimaryControlHighlight() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getPrimaryControlDarkShadow() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getPrimaryControl() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getControlHighlight() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getControlDarkShadow() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
-    
-      public ColorUIResource getControl() {
-        return new ColorUIResource(java.awt.Color.DARK_GRAY);
-      }
 }
