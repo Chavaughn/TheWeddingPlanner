@@ -1615,6 +1615,13 @@ public class UI {
         JLabel      instructions;
         JLabel      dateinstructions1;
         JLabel      dateinstructions2;
+        JLabel      venueinstructions;
+        JLabel      clientinstructions;
+        ArrayList<String[]> venueList = new ArrayList<String[]>();
+        ArrayList<String[]> tempVenueList = new ArrayList<String[]>();
+        ArrayList<String[]> clientList = new ArrayList<String[]>();
+        ArrayList<String[]> tempClientList = new ArrayList<String[]>();
+
         JLabel      title = new JLabel("<html><h>Create New Reservation</h><html>");
 
         //Create Title frame
@@ -1643,10 +1650,11 @@ public class UI {
 
         //This makes the text in the text field alligned to the center, you can just sorta change to whatever direction you want
         txtID.setHorizontalAlignment(JTextField.CENTER);
-        GridLayout layout = new GridLayout(4,2);
+        GridLayout layout = new GridLayout(5,2);
 
         //Create spacing between interfaces
-        layout.setVgap(10);
+        layout.setVgap(10); //vertical gap
+        layout.setHgap(-150); //horizontal gap
 
         //Set panel layout
         pnlDisplay.setLayout(layout);
@@ -1670,17 +1678,64 @@ public class UI {
         cmdClose.setBackground(new Color(221,55,78));
         cmdClose.setForeground(Color.white);
 
+        //Create Lists for Venues
+        VenueManagement ven = new VenueManagement();
+        tempVenueList = ven.viewAllVenues();//Need a get method for just names
+        if (tempVenueList.size()>0){
+            for (int i=0; i<tempVenueList.size();i++){
+                venueList.add((tempVenueList.get(i)));
+            }
+        }
+
+        //Create Lists for Clients
+        ClientManagement clientMang = new ClientManagement();
+        tempClientList = clientMang.viewAllClients();//Need a get method in client management to return just names
+        if (tempClientList.size()>0){
+            for (int i=0; i<tempClientList.size();i++){
+                clientList.add((tempClientList.get(i)));
+            }
+        }
+
+        String[] newVenueList = new String[venueList.size()];
+        String[] newClientList = new String[clientList.size()];
+        try{
+            venueList.toArray(newVenueList);
+            clientList.toArray(newClientList);
+        }catch(ArrayStoreException e){
+        }
+
+        for (int i=0; i<venueList.size();i++){
+            newVenueList[i] = Arrays.toString(venueList.get(i));
+        }
+        for (int i=0; i<clientList.size();i++){
+            newClientList[i] = Arrays.toString(clientList.get(i));
+        }
+    
+        //Create drop down box
+        final JComboBox dropDownBox1 = new JComboBox(newVenueList);
+        final JComboBox dropDownBox2 = new JComboBox(newClientList);
+        dropDownBoxMenu = dropDownBox1;
+        dropDownBoxMenu = dropDownBox2;
+        
+
         //Add Buttons to Screen
         pnlCommand.add(cmdSelect);
         pnlCommand.add(cmdClose);
 
-        //Add date instructions text to panel
-        dateinstructions1 = new JLabel("Please Select A Wedding Date");
-        dateinstructions1.setForeground(Color.WHITE);
-        pnlDisplay.add(dateinstructions1); 
+        //Add client drop down menu
+        clientinstructions = new JLabel("Please Select Client for Reservation");
+        clientinstructions.setForeground(Color.WHITE);
+        pnlDisplay.add(clientinstructions);
+        pnlDisplay.add(dropDownBox2);
+        // dropDownBox1.setBounds(50, 10,90,20); 
+
+        // //Add date instructions text to panel
+        // dateinstructions1 = new JLabel("Please Select A Wedding Date");
+        // dateinstructions1.setForeground(Color.WHITE);
+        // pnlDisplay.add(dateinstructions1); 
 
         //Add date picker/calendar
-        pnlDisplay.add(datePicker1);
+        // pnlDisplay.add(datePicker1);
 
         //Add date instructions text to panel
         dateinstructions2 = new JLabel("Please Select A Reservation Date");
@@ -1689,6 +1744,13 @@ public class UI {
 
         //Add date picker/calendar
         pnlDisplay.add(datePicker2);
+
+        //Add venue drop down menu
+        venueinstructions = new JLabel("Please Select An Available Venue");
+        venueinstructions.setForeground(Color.WHITE);
+        pnlDisplay.add(venueinstructions);
+        pnlDisplay.add(dropDownBox1);
+        // dropDownBox1.setBounds(50, 10,90,20);  
 
         //Add Estimated Price field
         pnlDisplay.add(new JLabel("Enter Estimated Price")).setForeground(Color.white);
@@ -1707,6 +1769,7 @@ public class UI {
             });
         txtPrice.setHorizontalAlignment(JTextField.CENTER);
         pnlDisplay.add(txtPrice);
+
 
         //Give Buttons ActionListeners
         cmdSelect.addActionListener(e -> {res.cReservation(new int[]{datePicker1.getModel().getYear(),datePicker1.getModel().getMonth(),datePicker1.getModel().getDay()}, new int[]{datePicker2.getModel().getYear(),datePicker2.getModel().getMonth(),datePicker2.getModel().getDay()}, Double.parseDouble(txtPrice.getText())); createReservationDisplay.dispose();});
@@ -2019,11 +2082,12 @@ public class UI {
             clientList = clientMang.viewAllClients();
             columnNames = columnName;
         }
-        else if(type == 2){//Reservation view
-            String[] columnName =  {"ReservationID", "Wedding Date", "Reservsation Date", "Approximate Price"};
+        else if(type == 2){//Reservation view, |Need the Reservation Database thing working to do this|
+            String[] columnName =  {"ReservationID", "Client", "Reservation Date", "Venue", "Approximate Price"};
             Reservation res = new Reservation();
             clientList = res.viewAllReservations();
             columnNames = columnName;
+            
         }
         else if(type == 3){//Venue view
             String[] columnName =  {"VenueID ","Venue Name", "Venue Type", "Location", "Date"};
@@ -2317,8 +2381,13 @@ public class UI {
             }
         }
         else if(type == 2){//Reservation 
-            Reservation res = new Reservation();
-            //clientList = res.viewAllReservations();
+            Reservation res = new Reservation(); //Need the Reservation Database thing working to do this
+            list = res.viewAllReservations();
+            if (list.size()>0){
+                for (int i=0; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
         }
         else if(type == 3){//Venue
             VenueManagement ven = new VenueManagement();
