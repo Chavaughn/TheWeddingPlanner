@@ -2014,7 +2014,7 @@ public class UI {
         pnlCommand.setBorder(BorderFactory.createEmptyBorder(30, 10, 10, 10));
        
         if(type == 1){//Client view
-            String[] columnName =  {"ClientID", "First Name","Last Name", "Email", "Phone Numbers","Date of Birth"};
+            String[] columnName =  {"ClientID", "First Name","Last Name", "Email", "Phone Numbers","ResID","Date of Birth"};
             ClientManagement clientMang = new ClientManagement();
             clientList = clientMang.viewAllClients();
             columnNames = columnName;

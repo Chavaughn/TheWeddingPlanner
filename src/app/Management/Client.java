@@ -10,6 +10,7 @@ public class Client{
     private LocalDate dateOfBirth;
     private String email; //Validate using regex
     private String phoneNumber;
+    private String ResId;
 
     /**REGEX for email check */
     private static final String EMAIL_PATTERN= "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
@@ -50,6 +51,11 @@ public class Client{
     /**RETURNS the Email of the client object */
     public String getEmail(){
         return this.email;
+    }
+
+    /**RETURNS the reservation Id of the client object */
+    public String getResID(){
+        return this.ResId;
     }
 
     /**RETURNS the Phone Number of the client object */

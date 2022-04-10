@@ -34,6 +34,7 @@ public class DatabaseMng {
     + "   LastName          VARCHAR(50),"
     + "   Email           VARCHAR(50),"
     + "   PhoneNumber           VARCHAR(20),"
+    + "   ResID           VARCHAR(20),"
     + "   DateOfBirth           DATE)";
 
     private String initReservationTable = "CREATE TABLE IF NOT EXISTS Reservations"
@@ -147,6 +148,7 @@ public class DatabaseMng {
                     resultSet.getString("LastName"),
                     resultSet.getString("Email"),
                     resultSet.getString("PhoneNumber"),
+                    resultSet.getString("ResID"),
                     resultSet.getString("DateOfBirth")});    
             }
             return viewClients;
@@ -176,6 +178,7 @@ public class DatabaseMng {
         + client.getClientName().split(" ")[1]+"','"
         + client.getEmail()+"', '"
         + client.getPhoneNumber()+"', '"
+        + client.getResID()+"', '"
         + client.getDateOfBirth().toString()+"')") 
         == true?true:false); 
     }
