@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Client{
     private int cId;
     private String name;
@@ -19,7 +18,13 @@ public class Client{
     /**Default Constructor */
     public Client(){}
 
-    /**Before calling this constructor make sure to check if the email they are giving is correct and validated using the isEmailValid() method */
+    /**
+     * Client constructor
+     * @param name
+     * @param dOB
+     * @param email
+     * @param phoneNumber
+     */
     public Client(String name, int[] dOB, String email, String phoneNumber){
         this.name = name;
         this.dateOfBirth = LocalDate.of(dOB[0],dOB[1],dOB[2]);

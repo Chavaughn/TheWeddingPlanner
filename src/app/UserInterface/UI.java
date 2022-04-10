@@ -42,6 +42,7 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.table.DefaultTableModel;
 
+import app.Management.Client;
 import app.Management.ClientManagement;
 import app.Management.Inventory;
 import app.Management.Item;
@@ -103,7 +104,7 @@ public class UI {
     private final String errorSound = "src/res/sound/error.wav";
 
     private static int ups = 0;
-    private static int venueId = 0;
+    private static int editId = 0;
 
     public UI(int state){
         this.state = state;
@@ -1539,7 +1540,7 @@ public class UI {
                     venMan.editVenue(new Venue(txtName.getText(),
                     new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},
                     dropDownBox2.getSelectedItem().toString(), 
-                    dropDownBox1.getSelectedItem().toString()), UI.venueId); 
+                    dropDownBox1.getSelectedItem().toString()), UI.editId); 
                     createVenueDisplay.dispose();
                 }
             });
@@ -1967,7 +1968,19 @@ public class UI {
         pnlDisplay.add(txtPhoneNum);
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(e -> {clientMan.addClient(txtName.getText(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},txtEmail.getText() ,txtPhoneNum.getText());createClientDisplay.dispose(); } );
+        cmdSelect.addActionListener(e -> {
+            if (ups == 0){
+                clientMan.addClient(txtName.getText(), 
+                new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},
+                txtEmail.getText() ,txtPhoneNum.getText());
+                createClientDisplay.dispose();
+            }else{
+                clientMan.editClient(new Client(txtName.getText(), 
+                new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth()+1,datePicker.getModel().getDay()},
+                txtEmail.getText() ,txtPhoneNum.getText()),UI.editId);
+                createClientDisplay.dispose();
+            }
+         } );
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -2379,12 +2392,28 @@ public class UI {
         //Give Buttons ActionListeners
         //TODO Add error handling for the if cells empty
         cmdMod.addActionListener( e -> {
-            setvenueId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
-            System.out.println("ID recorded: "+venueId);
-            setUps(1);
-            playSound(buttonPressSound);
-            new UI(10);
-            createVenueDisplay.setVisible(false);
+            if(type == 1){//Client 
+                setEditedId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
+                System.out.println("ID recorded (Client): "+editId);
+                setUps(1);
+                playSound(buttonPressSound);
+                new UI(14);
+                createClientDisplay.setVisible(false);
+            }
+            else if(type == 2){//Reservation 
+                Reservation res = new Reservation();
+                //clientList = res.viewAllReservations();
+            }
+            else if(type == 3){//Venue
+                setEditedId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
+                System.out.println("ID recorded (Venue): "+editId);
+                setUps(1);
+                playSound(buttonPressSound);
+                new UI(10);
+                createVenueDisplay.setVisible(false);
+            }
+            else if(type == 4){//Inventory 
+            }
         });
         cmdClose.addActionListener(new CloseButtonListener());
 
@@ -2394,8 +2423,8 @@ public class UI {
         createVenueDisplay.add(pnlCommand, BorderLayout.SOUTH);
         packFrameLogin(createVenueDisplay);
     }
-    private void setvenueId(int id) {
-        UI.venueId = id;
+    private void setEditedId(int id) {
+        UI.editId = id;
     }
 
     private class CloseButtonListener implements ActionListener

@@ -36,6 +36,13 @@ public class DatabaseMng {
     + "   PhoneNumber           VARCHAR(20),"
     + "   DateOfBirth           DATE)";
 
+    private String initReservationTable = "CREATE TABLE IF NOT EXISTS Reservations"
+    + "  (Id           VARCHAR(32),"
+    + "   Name            VARCHAR(50),"
+    + "   Date          DATE,"
+    + "   ClientID           VARCHAR(32),"
+    + "   ItemsNeededID           VARCHAR(32))";
+
     private String VenueTableInit = "INSERT INTO Venue "
     + "Values ( '"
     + "1','"
@@ -70,7 +77,7 @@ public class DatabaseMng {
 
             statement.execute(initVenueTable);
             statement.execute(initClientTable);
-            // statement.execute(VenueTableInit);
+            statement.execute(initReservationTable);
 
             //TODO: Lower time it takes to init
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Venue WHERE Id=(SELECT max(Id) FROM Venue)");
