@@ -46,6 +46,12 @@ public class DatabaseMng {
     + "   VenueID           VARCHAR(32),"
     + "   ApproximatePrice           DECIMAL(10,2))";
 
+    private String initItemsTable = "CREATE TABLE IF NOT EXISTS Items"
+    + "  (Id           VARCHAR(32),"
+    + "   ItemName          VARCHAR(32),"
+    + "   Quantity           INTEGER,"
+    + "   ItemType           VARCHAR(32))";
+
     private String VenueTableInit = "INSERT INTO Venue "
     + "Values ( '"
     + "1','"
@@ -65,6 +71,7 @@ public class DatabaseMng {
     private String lastvenueid = "0";
     private String lastclientid = "0";
     private String lastresid = "0";
+    private String lastitemid = "0";
     private ArrayList<String[]> viewValues;
     private ArrayList<String[]> viewClients;
     
@@ -82,6 +89,7 @@ public class DatabaseMng {
             statement.execute(initVenueTable);
             statement.execute(initClientTable);
             statement.execute(initReservationTable);
+            statement.execute(initItemsTable);
 
             //TODO: Lower time it takes to init
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Venue WHERE Id=(SELECT max(Id) FROM Venue)");
@@ -99,6 +107,12 @@ public class DatabaseMng {
 
             while (resultSet.next()) {
                 lastresid = resultSet.getString("Id");    
+            }
+
+            resultSet = statement.executeQuery("SELECT * FROM Items WHERE Id=(SELECT max(Id) FROM Items)");
+
+            while (resultSet.next()) {
+                lastitemid = resultSet.getString("Id");    
             }
 
         }
@@ -196,6 +210,32 @@ public class DatabaseMng {
         }
     }
 
+    public ArrayList<String[]> viewInventory(){
+        viewValues = new ArrayList<>();
+
+        try{
+            Class.forName(jdbcDriver);
+            con = DriverManager.getConnection(dbAddress, userName, password);
+
+            Statement statement = con.createStatement();
+
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Items");
+            
+
+            while (resultSet.next()) {
+                viewValues.add(new String[]{
+                    resultSet.getString("ItemName"),
+                    resultSet.getString("Quantity"),
+                    resultSet.getString("ItemType")});    
+            }
+            return viewValues;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return viewValues;
+        }
+    }
+
     public void AddToVenueTable(Venue venue){
         System.out.println(executeQ("INSERT INTO Venue "
         + "Values ( '"
@@ -228,6 +268,16 @@ public class DatabaseMng {
         + res.getResClientId()+"', '"
         + res.getResVenueId()+"', '"
         + res.getappPrice()+"')") 
+        == true?true:false); 
+    }
+
+    public void AddToItemsTable(Item item){
+        System.out.println(executeQ("INSERT INTO Items "
+        + "Values ( '"
+        + (Integer.parseInt(lastitemid)+1) +"','"
+        + item.getName()+"','"
+        + item.getQuantity()+"', '"
+        + item.getItemType()+"')") 
         == true?true:false); 
     }
 
@@ -289,6 +339,18 @@ public class DatabaseMng {
         == true?"Successfully Executed":"Failed to Execute");  
     }
 
+    public void updateItemsTable(Item item, int Id){
+        System.out.println(executeQ("UPDATE items "
+        + "Set" 
+        +" ItemName = '"
+        + item.getName()+"',"
+        +" Quantity = '"
+        + item.getQuantity()+"',"
+        +" ItemType = '"
+        + item.getItemType()+"' WHERE Id = '"+ Id + "'") 
+        == true?"Successfully Executed":"Failed to Execute");  
+    }
+
     public void removeFromVenueTable(int Id){
         System.out.println("Deleting Id: "+ Id+" From table Venue");
         System.out.println(executeQ("DELETE FROM Venue "
@@ -298,16 +360,34 @@ public class DatabaseMng {
     }
 
     public void removeFromClientTable(int Id){
+        Client Client = getClientById(Id+"");
         System.out.println("Deleting Id: "+ Id+" From table Clients");
-        System.out.println(executeQ("DELETE FROM Client "
+        System.out.println(executeQ("DELETE FROM Clients "
         + "WHERE "
         + "Id = '" +Id +"'") 
         == true?"Successfully Executed":"Failed to Execute");
+        removeFromReservationTableDB(Integer.parseInt(Client.getClientId()));
     }
 
     public void removeFromReservationTable(int Id){
         System.out.println("Deleting Id: "+ Id+" From table Reservations");
         System.out.println(executeQ("DELETE FROM Reservations "
+        + "WHERE "
+        + "Id = '" +Id +"'") 
+        == true?"Successfully Executed":"Failed to Execute");
+    }
+
+    public void removeFromReservationTableDB(int Id){
+        System.out.println("Deleting Id: "+ Id+" From table Reservations");
+        System.out.println(executeQ("DELETE FROM Reservations "
+        + "WHERE "
+        + "ClientID = '" +Id +"'") 
+        == true?"Successfully Executed":"Failed to Execute");
+    }
+
+    public void removeFromItemTable(int Id){
+        System.out.println("Deleting Id: "+ Id+" From table Items");
+        System.out.println(executeQ("DELETE FROM Items "
         + "WHERE "
         + "Id = '" +Id +"'") 
         == true?"Successfully Executed":"Failed to Execute");

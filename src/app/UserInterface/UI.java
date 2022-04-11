@@ -1895,7 +1895,18 @@ public class UI {
          //Give Buttons ActionListeners
         //cmdSelect.addActionListener(new createVenueButtonListener());
         //cmdSelect.addActionListener(e -> {venMan.createVenue(txtName.getText(), dropDownBox1.getSelectedItem().toString(), new int[]{datePicker.getModel().getYear(),datePicker.getModel().getMonth(),datePicker.getModel().getDay()},dropDownBox2.getSelectedItem().toString()); createVenueDisplay.dispose();});
-        cmdSelect.addActionListener(e -> {itemMan.createItem(txtName.getText(), Integer.parseInt(txtQuantity.getText()), dropDownBox.getSelectedItem().toString()); createInventoryItemDisplay.dispose();});
+        cmdSelect.addActionListener(e -> {
+            if (ups == 0){
+                itemMan.createItem(txtName.getText(),
+                Integer.parseInt(txtQuantity.getText()),
+                dropDownBox.getSelectedItem().toString());
+            }else{
+                itemMan.editItem(new Item(txtName.getText(),
+                Integer.parseInt(txtQuantity.getText()),
+                dropDownBox.getSelectedItem().toString()), UI.editId);
+            }
+            createInventoryItemDisplay.dispose();
+            });
         cmdClose.addActionListener(new CloseButtonListener());
 
 
@@ -2243,7 +2254,7 @@ public class UI {
             Inventory inv = new Inventory();
             list = inv.viewAllItems();
             if (list.size()>0){
-                for (int i=1; i<list.size();i++){
+                for (int i=0; i<list.size();i++){
                     theList.add((list.get(i)));
                 }
             }
@@ -2281,7 +2292,7 @@ public class UI {
         pnlCommand.add(cmdClose);
 
         //Add Parish selection instructions text to panel
-        instructions = new JLabel("Please Select A Client To Remove");
+        instructions = new JLabel("Please Select The Data To Remove");
         instructions.setForeground(Color.WHITE);
         pnlDisplay.add(instructions); 
 
@@ -2318,6 +2329,7 @@ public class UI {
                 venMan.removeVenue(dropDownBox1.getSelectedItem().toString());
                 break;
             case 4:
+                itemMan.removeItem(dropDownBox1.getSelectedItem().toString());
                 break;
             default:
                 break;
@@ -2398,6 +2410,13 @@ public class UI {
             }
         }
         else if(type == 4){//Inventory 
+            Inventory inv = new Inventory();
+            list = inv.viewAllItems();
+            if (list.size()>0){
+                for (int i=0; i<list.size();i++){
+                    theList.add((list.get(i)));
+                }
+            }
         }
 
         //Create spacing between interfaces
@@ -2484,6 +2503,12 @@ public class UI {
                 createVenueDisplay.setVisible(false);
             }
             else if(type == 4){//Inventory 
+                setEditedId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
+                System.out.println("ID recorded (Inventory Item): "+editId);
+                setUps(1);
+                playSound(buttonPressSound);
+                new UI(12);
+                createVenueDisplay.setVisible(false);
             }
         });
         cmdClose.addActionListener(new CloseButtonListener());
