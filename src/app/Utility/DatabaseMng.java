@@ -74,11 +74,7 @@ public class DatabaseMng {
     private String lastitemid = "0";
     private ArrayList<String[]> viewValues;
     private ArrayList<String[]> viewClients;
-    
 
-    /**
-     * TODO: Link Reservation to a Client and Reservation to a Vennue with new fields to the database table
-     */
     public DatabaseMng(){
         try{
             Class.forName(jdbcDriver);
@@ -255,7 +251,7 @@ public class DatabaseMng {
         + client.getClientName().split(" ")[1]+"','"
         + client.getEmail()+"', '"
         + client.getPhoneNumber()+"', '"
-        + client.getReservation().getResId()+"', '"
+        + 0+"', '"
         + client.getDateOfBirth().toString()+"')") 
         == true?true:false); 
     }
@@ -269,6 +265,12 @@ public class DatabaseMng {
         + res.getResVenueId()+"', '"
         + res.getappPrice()+"')") 
         == true?true:false); 
+        
+        System.out.println(executeQ("UPDATE Clients "
+        + "Set" 
+        +" ResID = '"
+        + lastresid+"' WHERE Id = '"+ res.getClientId() + "'") 
+        == true?"Successfully Executed":"Failed to Execute");  
     }
 
     public void AddToItemsTable(Item item){
@@ -310,7 +312,7 @@ public class DatabaseMng {
         System.out.println("Phone Number: "+ client.getPhoneNumber());
         System.out.println("Date of Birth: "+ client.getDateOfBirth().toString());
         System.out.println("----------------------------------------");
-        System.out.println(executeQ("UPDATE Venue "
+        System.out.println(executeQ("UPDATE Clients "
         + "Set" 
         +" FirstName = '"
         + client.getClientName().split(" ")[0]+"',"
@@ -320,7 +322,7 @@ public class DatabaseMng {
         + client.getEmail()+"',"
         +" PhoneNumber = '"
         + client.getPhoneNumber()+"',"
-        +" Date = '"
+        +" DateOfBirth = '"
         + client.getDateOfBirth().toString()+"' WHERE Id = '"+ Id + "'") 
         == true?"Successfully Executed":"Failed to Execute");  
     }
