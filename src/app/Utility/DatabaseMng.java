@@ -1,8 +1,10 @@
 package app.Utility;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.jar.Attributes.Name;
 
 import app.Management.*;
 
@@ -39,10 +41,10 @@ public class DatabaseMng {
 
     private String initReservationTable = "CREATE TABLE IF NOT EXISTS Reservations"
     + "  (Id           VARCHAR(32),"
-    + "   Name            VARCHAR(50),"
     + "   Date          DATE,"
     + "   ClientID           VARCHAR(32),"
-    + "   ItemsNeededID           VARCHAR(32))";
+    + "   VenueID           VARCHAR(32),"
+    + "   ApproximatePrice           DECIMAL(10,2))";
 
     private String VenueTableInit = "INSERT INTO Venue "
     + "Values ( '"
@@ -62,6 +64,7 @@ public class DatabaseMng {
     private Connection con;
     private String lastvenueid = "0";
     private String lastclientid = "0";
+    private String lastresid = "0";
     private ArrayList<String[]> viewValues;
     private ArrayList<String[]> viewClients;
     
@@ -91,6 +94,11 @@ public class DatabaseMng {
 
             while (resultSet.next()) {
                 lastclientid = resultSet.getString("Id");    
+            }
+            resultSet = statement.executeQuery("SELECT * FROM Reservations WHERE Id=(SELECT max(Id) FROM Reservations)");
+
+            while (resultSet.next()) {
+                lastresid = resultSet.getString("Id");    
             }
 
         }
@@ -159,6 +167,35 @@ public class DatabaseMng {
         }
     }
 
+    public ArrayList<String[]> viewReservations(){
+        viewValues = new ArrayList<>();
+
+        try{
+            Class.forName(jdbcDriver);
+            con = DriverManager.getConnection(dbAddress, userName, password);
+
+            Statement statement = con.createStatement();
+
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Reservations");
+            
+
+            while (resultSet.next()) {
+                lastresid = resultSet.getString("Id");
+                viewValues.add(new String[]{
+                    resultSet.getString("Id"),
+                    resultSet.getString("Date"),
+                    resultSet.getString("ClientID"),
+                    resultSet.getString("VenueID"),
+                    resultSet.getString("ApproximatePrice")});    
+            }
+            return viewValues;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return viewValues;
+        }
+    }
+
     public void AddToVenueTable(Venue venue){
         System.out.println(executeQ("INSERT INTO Venue "
         + "Values ( '"
@@ -178,8 +215,19 @@ public class DatabaseMng {
         + client.getClientName().split(" ")[1]+"','"
         + client.getEmail()+"', '"
         + client.getPhoneNumber()+"', '"
-        + client.getResID()+"', '"
+        + client.getReservation().getResId()+"', '"
         + client.getDateOfBirth().toString()+"')") 
+        == true?true:false); 
+    }
+
+    public void AddToReservationTable(Reservation res){
+        System.out.println(executeQ("INSERT INTO Reservations "
+        + "Values ( '"
+        + (Integer.parseInt(lastresid)+1) +"','"
+        + res.getResDate()+"','"
+        + res.getResClientId()+"', '"
+        + res.getResVenueId()+"', '"
+        + res.getappPrice()+"')") 
         == true?true:false); 
     }
 
@@ -227,6 +275,20 @@ public class DatabaseMng {
         == true?"Successfully Executed":"Failed to Execute");  
     }
 
+    public void updateReservationTable(Reservation res, int Id){
+        System.out.println(executeQ("UPDATE Reservations "
+        + "Set" 
+        +" Date = '"
+        + res.getResDate()+"',"
+        +" ClientID = '"
+        + res.getResClientId()+"',"
+        +" VenueID = '"
+        + res.getResVenueId()+"',"
+        +" ApproximatePrice = '"
+        + res.getappPrice()+"' WHERE Id = '"+ Id + "'") 
+        == true?"Successfully Executed":"Failed to Execute");  
+    }
+
     public void removeFromVenueTable(int Id){
         System.out.println("Deleting Id: "+ Id+" From table Venue");
         System.out.println(executeQ("DELETE FROM Venue "
@@ -243,6 +305,54 @@ public class DatabaseMng {
         == true?"Successfully Executed":"Failed to Execute");
     }
 
+    public void removeFromReservationTable(int Id){
+        System.out.println("Deleting Id: "+ Id+" From table Reservations");
+        System.out.println(executeQ("DELETE FROM Reservations "
+        + "WHERE "
+        + "Id = '" +Id +"'") 
+        == true?"Successfully Executed":"Failed to Execute");
+    }
+    
+    public Client getClientById(String id){
+        Client nClient;
+        try {
+            Class.forName(jdbcDriver);
+            con = DriverManager.getConnection(dbAddress, userName, password);
+    
+            Statement statement = con.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Clients WHERE Id = '"+id+"'");
+    
+                while (resultSet.next()) {
+                    nClient = new Client(resultSet.getString("Id"),resultSet.getString("FirstName")+" "+resultSet.getString("LastName"),
+                     LocalDate.parse(resultSet.getString("DateOfBirth")), resultSet.getString("email"), resultSet.getString("phoneNumber"),null); 
+                     return nClient;
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Client();
+    }
+
+    public Venue getVenueById(String id){
+        Venue nVenue;
+        try {
+            Class.forName(jdbcDriver);
+            con = DriverManager.getConnection(dbAddress, userName, password);
+    
+            Statement statement = con.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Clients WHERE Id = '"+id+"'");
+    
+                while (resultSet.next()) {
+                    nVenue = new Venue(resultSet.getString("Id"),resultSet.getString("VenueName"),
+                     LocalDate.parse(resultSet.getString("Date")), resultSet.getString("Type"), resultSet.getString("Parish")); 
+                     return nVenue;
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Venue();
+    }
+
     public Boolean executeQ(String query){
         try{
             Class.forName(jdbcDriver);
@@ -257,4 +367,5 @@ public class DatabaseMng {
             return false;
         }
     }
+    
 }

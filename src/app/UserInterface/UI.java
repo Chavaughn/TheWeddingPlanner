@@ -105,6 +105,8 @@ public class UI {
 
     private static int ups = 0;
     private static int editId = 0;
+    private static int resId = 0;
+    private static int venueId = 0;
 
     public UI(int state){
         this.state = state;
@@ -670,7 +672,6 @@ public class UI {
       Icon lsticon =      new ImageIcon(listIcon);
       Icon editicon =     new ImageIcon(editIcon);
       Icon delicon =      new ImageIcon(deleteIcon);
-      Icon viewpasticon = new ImageIcon(viewPastIcon);
       Icon exiticon =         new ImageIcon(exitIcon);
 
       
@@ -686,10 +687,6 @@ public class UI {
 
       cmdClient = new JButton("      Clients            ", editicon);
       cmdClient.setPreferredSize(new Dimension(150, 100));
-
-      //Change this icon later
-      cmdHistory = new JButton("     History[X]       ", viewpasticon);
-      cmdHistory.setPreferredSize(new Dimension(150, 100));
       
       cmdExit = new JButton          ("        Exit                ", exiticon);
       cmdExit.setPreferredSize(new Dimension(100, 80));
@@ -700,7 +697,6 @@ public class UI {
       cmdVenue.addActionListener(new VenueButtonListener());
       cmdInventory.addActionListener(new InventoryButtonListener());
       cmdClient.addActionListener(new ClientButtonListener());
-      cmdHistory.addActionListener(new HistoryButtonListener());
       cmdExit.addActionListener(new ExitButtonListener());
      
 
@@ -721,10 +717,6 @@ public class UI {
       cmdClient.setBorderPainted(false);
       cmdClient.setForeground(Color.black);
 
-      cmdHistory.setBackground(new Color(226,228,233));
-      cmdHistory.setBorderPainted(false);
-      cmdHistory.setForeground(Color.black);
-
       cmdExit.setBackground(new Color(221,55,78));
       cmdExit.setBorderPainted(false);
       cmdExit.setForeground(Color.white);
@@ -741,9 +733,6 @@ public class UI {
       pnlCommand.add(Box.createRigidArea(new Dimension(0, 40)));  
 
       pnlCommand.add(cmdClient);
-      pnlCommand.add(Box.createRigidArea(new Dimension(0, 40)));  
-
-      pnlCommand.add(cmdHistory);
       pnlCommand.add(Box.createRigidArea(new Dimension(0, 40)));  
 
       pnlCommand.add(cmdExit);
@@ -802,16 +791,6 @@ public class UI {
             playSound(buttonPressSound);
             mainDisplay.setVisible(false);
             new UI(13);
-        }
-    }
-
-
-    private class HistoryButtonListener implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e)
-        {
-            playSound(buttonPressSound);
-            new UI(10);
         }
     }
     /* ------------------------------------ RESERVATIONS SCREEN -------------------------------------*/
@@ -1772,7 +1751,26 @@ public class UI {
 
 
         //Give Buttons ActionListeners
-        cmdSelect.addActionListener(e -> {res.cReservation(new int[]{datePicker1.getModel().getYear(),datePicker1.getModel().getMonth(),datePicker1.getModel().getDay()}, new int[]{datePicker2.getModel().getYear(),datePicker2.getModel().getMonth(),datePicker2.getModel().getDay()}, Double.parseDouble(txtPrice.getText())); createReservationDisplay.dispose();});
+        cmdSelect.addActionListener(e -> {
+            if (ups == 0){
+                res.cReservation(
+                    dropDownBox2.getSelectedItem().toString().split(",")[0].replace("[", ""),
+                        new int[]{datePicker2.getModel().getYear(),
+                            datePicker2.getModel().getMonth(),
+                            datePicker2.getModel().getDay()},
+                    dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", ""),
+                    Double.parseDouble(txtPrice.getText())
+                    );
+                }else{
+                    res.eReservation(new Reservation(dropDownBox2.getSelectedItem().toString().split(",")[0].replace("[", ""),
+                    new int[]{datePicker2.getModel().getYear(),
+                        datePicker2.getModel().getMonth(),
+                        datePicker2.getModel().getDay()},
+                dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", ""),
+                Double.parseDouble(txtPrice.getText())), UI.editId);
+                }
+            createReservationDisplay.dispose();
+        });
         cmdClose.addActionListener(new CloseButtonListener());
 
         //Add Panels to frame
@@ -2083,7 +2081,7 @@ public class UI {
             columnNames = columnName;
         }
         else if(type == 2){//Reservation view, |Need the Reservation Database thing working to do this|
-            String[] columnName =  {"ReservationID", "Client", "Reservation Date", "Venue", "Approximate Price"};
+            String[] columnName =  {"ReservationID", "Reservation Date", "Client ID", "Venue ID", "Approximate Price"};
             Reservation res = new Reservation();
             clientList = res.viewAllReservations();
             columnNames = columnName;
@@ -2314,6 +2312,7 @@ public class UI {
                 clientMan.removeClient(dropDownBox1.getSelectedItem().toString());
                 break;
             case 2:
+                res.dReservation(dropDownBox1.getSelectedItem().toString());
                 break;
             case 3:
                 venMan.removeVenue(dropDownBox1.getSelectedItem().toString());
@@ -2470,8 +2469,11 @@ public class UI {
                 createClientDisplay.setVisible(false);
             }
             else if(type == 2){//Reservation 
-                Reservation res = new Reservation();
-                //clientList = res.viewAllReservations();
+                setEditedId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
+                System.out.println("ID recorded (Reservation): "+editId);
+                setUps(1);
+                playSound(buttonPressSound);
+                new UI(11);
             }
             else if(type == 3){//Venue
                 setEditedId(Integer.parseInt(dropDownBox1.getSelectedItem().toString().split(",")[0].replace("[", "")));
@@ -2494,6 +2496,12 @@ public class UI {
     }
     private void setEditedId(int id) {
         UI.editId = id;
+    }
+    private void setVenueId(int id) {
+        UI.venueId = id;
+    }
+    private void setResId(int id) {
+        UI.resId = id;
     }
 
     private class CloseButtonListener implements ActionListener

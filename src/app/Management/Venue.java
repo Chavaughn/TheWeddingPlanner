@@ -9,7 +9,7 @@ public class Venue extends Client{
     private String venueName;
     private LocalDate date;
     private String location;
-    private int venueID;
+    private String venueID;
     private String venType;
     private List<String> itemsNeeded = new ArrayList<String>();// Format: Item name, Amount needed, Grouping
     /**Constants */
@@ -29,6 +29,13 @@ public class Venue extends Client{
         setLocation(location);
     }
 
+    public Venue(String iD, String venueName, LocalDate date, String venType,String location){
+        this.venueID = iD;
+        this.venueName = venueName;
+        this.date = date;
+        setVenueType(venType);
+        setLocation(location);
+    }
     // /**Alt constructor */
     // public Venue(String venueName, String venueID, int[] date, String venType, String location, List<String> itemsNeeded){
     //     this.venueName = venueName;
@@ -59,7 +66,7 @@ public class Venue extends Client{
     }
     
     /**RETURNS the ID of the venue object */
-    public int getVenueId(){
+    public String getVenueId(){
         return this.venueID;
     }
     

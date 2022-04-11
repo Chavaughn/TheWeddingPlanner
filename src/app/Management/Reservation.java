@@ -4,40 +4,71 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import app.Utility.DatabaseMng;
+
 public class Reservation extends Client{
-    private int resId;
+    private String resId;
+    private String clientId;
+    private Client client;
+    private String venueId;
+    private Venue venue;
     private LocalDate weddingDate;
     private LocalDate resDate;
     private double appPrice;
     private Reservation res;
+    private DatabaseMng dbm;
 
     
     public Reservation(){
     }
 
-    public Reservation(String name, int[] dOB, String email, String phoneNumber, double appPrice){
-        super(name, dOB, email, phoneNumber);
-        this.resId=super.getClientId();
-        this.appPrice = appPrice;
-    }
-    public Reservation(int[] weddingDate,int[] resDate, double appPrice){
-        this.resId=super.getClientId();
+    public Reservation(String clientId, int[] weddingDate,String venueId, double appPrice){
+        this.clientId = clientId;
         this.weddingDate = LocalDate.of(weddingDate[0], weddingDate[1], weddingDate[2]);
-        this.resDate = LocalDate.of(resDate[0], resDate[1], resDate[2]);
+        this.resDate = LocalDate.now();
+        this.venueId = venueId;
+        this.client = addClientToReservation(this.clientId);
         this.appPrice = appPrice;
     }
 
-    public void addVenuetoReservation(int venId){
-
+    public Client addClientToReservation(String cid){
+        dbm = new DatabaseMng();
+        return dbm.getClientById(cid);
+    }
+    public Venue addVenuetoReservation(String venId){
+        dbm = new DatabaseMng();
+        return dbm.getVenueById(venId);
     }
 
-    public int getResId(){
+    public String getResId(){
         return this.resId;
     }
-    public Reservation cReservation(int[] weddingDate,int[] resDate, double appPrice){
-        
-        res = new Reservation(weddingDate, resDate, appPrice);
-        return this.res;
+
+    
+    public String getResClientId(){
+        return this.clientId;
+    }
+
+    
+    public String getResVenueId(){
+        return this.venueId;
+    }
+
+    public void cReservation(String clientId, int[] weddingDate,String venueId, double appPrice){
+        dbm = new DatabaseMng();
+        res = new Reservation(clientId, weddingDate, venueId, appPrice);
+        dbm.AddToReservationTable(res);
+    }
+
+    public void eReservation(Reservation res, int id){
+        dbm = new DatabaseMng();
+        dbm.updateReservationTable(res, id);
+    }
+
+    public void dReservation(String record){
+        dbm = new DatabaseMng();
+        int Id = Integer.parseInt(record.split(",")[0].replace("[", ""));
+        dbm.removeFromReservationTable(Id);
     }
 
     public double getappPrice(){
@@ -50,7 +81,8 @@ public class Reservation extends Client{
     }
 
     public ArrayList<String[]> viewAllReservations(){
-        return null;
+        dbm = new DatabaseMng();
+        return dbm.viewReservations();
     }
 
     /**RETURNS the Date the reservation was made of the reservation object */

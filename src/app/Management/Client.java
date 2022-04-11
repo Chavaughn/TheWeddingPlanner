@@ -5,12 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Client{
-    private int cId;
+    private String cId;
     private String name;
     private LocalDate dateOfBirth;
     private String email; //Validate using regex
     private String phoneNumber;
-    private String ResId;
+    private Reservation res;
 
     /**REGEX for email check */
     private static final String EMAIL_PATTERN= "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
@@ -33,9 +33,28 @@ public class Client{
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * Alternate Constructor
+     * @param iD
+     * @param name
+     * @param dOB
+     * @param email
+     * @param phoneNumber
+     */
+    public Client(String iD, String name, LocalDate dOB, String email, String phoneNumber, Reservation res){
+        this.cId = iD;
+        this.name = name;
+        this.dateOfBirth = dOB;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        if (res!= null){
+            this.res = res;
+        }
+    }
+
 
     /**RETURNS the id of the CLient object */
-    public int getClientId(){
+    public String getClientId(){
         return this.cId;
     }
     /**RETURNS the name of the client object */
@@ -53,9 +72,9 @@ public class Client{
         return this.email;
     }
 
-    /**RETURNS the reservation Id of the client object */
-    public String getResID(){
-        return this.ResId;
+    /**RETURNS the reservation of the client object */
+    public Reservation getReservation(){
+        return this.res;
     }
 
     /**RETURNS the Phone Number of the client object */
